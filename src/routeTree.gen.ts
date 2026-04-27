@@ -9,8 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RotinaRouteImport } from './routes/rotina'
+import { Route as MetasRouteImport } from './routes/metas'
+import { Route as HabitosRouteImport } from './routes/habitos'
+import { Route as FinanceiroRouteImport } from './routes/financeiro'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RotinaRoute = RotinaRouteImport.update({
+  id: '/rotina',
+  path: '/rotina',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MetasRoute = MetasRouteImport.update({
+  id: '/metas',
+  path: '/metas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HabitosRoute = HabitosRouteImport.update({
+  id: '/habitos',
+  path: '/habitos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceiroRoute = FinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +43,72 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/financeiro': typeof FinanceiroRoute
+  '/habitos': typeof HabitosRoute
+  '/metas': typeof MetasRoute
+  '/rotina': typeof RotinaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/financeiro': typeof FinanceiroRoute
+  '/habitos': typeof HabitosRoute
+  '/metas': typeof MetasRoute
+  '/rotina': typeof RotinaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/financeiro': typeof FinanceiroRoute
+  '/habitos': typeof HabitosRoute
+  '/metas': typeof MetasRoute
+  '/rotina': typeof RotinaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
+  id: '__root__' | '/' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FinanceiroRoute: typeof FinanceiroRoute
+  HabitosRoute: typeof HabitosRoute
+  MetasRoute: typeof MetasRoute
+  RotinaRoute: typeof RotinaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/rotina': {
+      id: '/rotina'
+      path: '/rotina'
+      fullPath: '/rotina'
+      preLoaderRoute: typeof RotinaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/metas': {
+      id: '/metas'
+      path: '/metas'
+      fullPath: '/metas'
+      preLoaderRoute: typeof MetasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/habitos': {
+      id: '/habitos'
+      path: '/habitos'
+      fullPath: '/habitos'
+      preLoaderRoute: typeof HabitosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/financeiro': {
+      id: '/financeiro'
+      path: '/financeiro'
+      fullPath: '/financeiro'
+      preLoaderRoute: typeof FinanceiroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +121,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FinanceiroRoute: FinanceiroRoute,
+  HabitosRoute: HabitosRoute,
+  MetasRoute: MetasRoute,
+  RotinaRoute: RotinaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
