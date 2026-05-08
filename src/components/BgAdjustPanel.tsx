@@ -7,11 +7,11 @@ export type BgSettings = {
 };
 
 const DEFAULTS: Record<"mobile" | "desktop", BgSettings> = {
-  mobile: { heightPct: 140, posX: 50, posY: 18 },
+  mobile: { heightPct: 100, posX: 50, posY: 0 },
   desktop: { heightPct: 100, posX: 50, posY: 88 },
 };
 
-const STORAGE_KEY = "bg-adjust-v1";
+const STORAGE_KEY = "bg-adjust-v2";
 
 type Stored = { mobile: BgSettings; desktop: BgSettings };
 
