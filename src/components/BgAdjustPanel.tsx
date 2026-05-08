@@ -11,7 +11,7 @@ const DEFAULTS: Record<"mobile" | "desktop", BgSettings> = {
   desktop: { heightPct: 100, posX: 50, posY: 88 },
 };
 
-const STORAGE_KEY = "bg-adjust-v2";
+const STORAGE_KEY = "bg-adjust-v3";
 
 type Stored = { mobile: BgSettings; desktop: BgSettings };
 
@@ -98,7 +98,7 @@ export function BgAdjustPanel({
           <Slider
             label="Altura (zoom)"
             value={settings.heightPct}
-            min={100}
+            min={40}
             max={250}
             step={1}
             unit="%"
