@@ -2,11 +2,9 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { useState, type FormEvent, type ReactNode } from "react";
 import loginBg from "@/assets/login-bg.png";
-import { BgAdjustPanel, useBgSettings } from "@/components/BgAdjustPanel";
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading, signIn, signUp } = useAuth();
-  const bg = useBgSettings();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -65,11 +63,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
         src={loginBg}
         alt=""
         aria-hidden
-        className="pointer-events-none absolute left-0 top-0 w-full object-cover grayscale contrast-110"
-        style={{
-          height: `${bg.settings.heightPct}%`,
-          objectPosition: `${bg.settings.posX}% ${bg.settings.posY}%`,
-        }}
+        className="pointer-events-none absolute left-0 top-0 h-full w-full object-cover grayscale contrast-110"
+        style={{ objectPosition: "50% 0%" }}
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(0,0,0,0.35)_0%,rgba(0,0,0,0.75)_55%,rgba(0,0,0,0.98)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black" />
@@ -168,7 +163,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           )}
         </button>
       </div>
-      <BgAdjustPanel {...bg} />
+      
     </div>
   );
 }
