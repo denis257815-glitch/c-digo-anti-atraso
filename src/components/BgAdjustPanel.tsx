@@ -7,8 +7,8 @@ export type BgSettings = {
 };
 
 const DEFAULTS: Record<"mobile" | "desktop", BgSettings> = {
-  mobile: { heightPct: 100, posX: 50, posY: 0 },
-  desktop: { heightPct: 100, posX: 50, posY: 88 },
+  mobile: { heightPct: 80, posX: 50, posY: 50 },
+  desktop: { heightPct: 80, posX: 50, posY: 50 },
 };
 
 const STORAGE_KEY = "bg-adjust-v3";
