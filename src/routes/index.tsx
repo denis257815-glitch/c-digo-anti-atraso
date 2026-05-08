@@ -116,6 +116,8 @@ function Dashboard() {
 
       <BroadcastBanner />
 
+      <StreakCard />
+
       <div className="relative mb-7 overflow-hidden rounded-2xl border border-border bg-surface p-5">
         <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/15 blur-2xl" />
         <div className="relative mb-4 flex items-end justify-between">
