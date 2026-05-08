@@ -1,9 +1,15 @@
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import type { ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 
 export function AuthGate({ children }: { children: ReactNode }) {
-  const { user, loading, signInWithGoogle } = useAuth();
+  const { user, loading, signIn, signUp } = useAuth();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   if (loading) {
     return (
@@ -15,52 +21,138 @@ export function AuthGate({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-5">
-        <div className="bg-grid pointer-events-none absolute inset-0 opacity-40" />
-        <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/30 blur-[120px]" />
+  if (user) return <>{children}</>;
 
-        <div className="relative z-10 w-full max-w-sm">
-          <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary font-display text-2xl leading-none text-primary-foreground">
-              A
-            </div>
-            <div className="font-display text-xs leading-tight tracking-[0.25em] text-muted-foreground">
-              CÓDIGO
-              <br />
-              <span className="text-primary">ANTI-ATRASO</span>
-            </div>
-          </div>
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!email.trim() || !password) {
+      setError("Preenche email e senha.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Senha precisa ter no mínimo 6 caracteres.");
+      return;
+    }
+    if (mode === "signup" && password !== confirm) {
+      setError("As senhas não batem.");
+      return;
+    }
+    setBusy(true);
+    try {
+      if (mode === "signin") await signIn(email.trim(), password);
+      else await signUp(email.trim(), password);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao entrar.";
+      setError(
+        msg.includes("Invalid login")
+          ? "Email ou senha errados."
+          : msg.includes("already registered")
+            ? "Esse email já tem conta. Faz login."
+            : msg,
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
 
-          <div className="mb-2 inline-block border-l-4 border-primary pl-3 text-[11px] font-bold uppercase tracking-[0.25em] text-primary">
-            Sem desculpa
+  return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-5 py-10">
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-40" />
+      <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/30 blur-[120px]" />
+
+      <div className="relative z-10 w-full max-w-sm">
+        <div className="mb-8 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary font-display text-2xl leading-none text-primary-foreground">
+            A
           </div>
-          <h1 className="font-display text-[3.5rem] leading-[0.9]">
-            Pare de
+          <div className="font-display text-xs leading-tight tracking-[0.25em] text-muted-foreground">
+            CÓDIGO
             <br />
-            viver no
-            <br />
-            <span className="text-primary">atraso.</span>
-          </h1>
-          <p className="mt-5 max-w-[260px] text-sm leading-relaxed text-muted-foreground">
-            Disciplina todo dia. Rotina, hábitos e foco num só lugar. Sua vida muda quando sua rotina muda.
-          </p>
+            <span className="text-primary">ANTI-ATRASO</span>
+          </div>
+        </div>
+
+        <div className="mb-2 inline-block border-l-4 border-primary pl-3 text-[11px] font-bold uppercase tracking-[0.25em] text-primary">
+          Sem desculpa
+        </div>
+        <h1 className="font-display text-[3rem] leading-[0.9]">
+          {mode === "signin" ? (
+            <>
+              Bora <span className="text-primary">entrar.</span>
+            </>
+          ) : (
+            <>
+              Cria sua <span className="text-primary">conta.</span>
+            </>
+          )}
+        </h1>
+        <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-muted-foreground">
+          Disciplina todo dia. Rotina, hábitos e foco num só lugar.
+        </p>
+
+        <form onSubmit={submit} className="mt-7 space-y-3">
+          <input
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+          />
+          <input
+            type="password"
+            autoComplete={mode === "signin" ? "current-password" : "new-password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Senha"
+            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+          />
+          {mode === "signup" && (
+            <input
+              type="password"
+              autoComplete="new-password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Confirma a senha"
+              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+            />
+          )}
+
+          {error && (
+            <div className="rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-xs text-primary">
+              {error}
+            </div>
+          )}
 
           <Button
-            onClick={signInWithGoogle}
+            type="submit"
+            disabled={busy}
             size="lg"
-            className="mt-8 h-12 w-full bg-primary text-base font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary/90"
+            className="h-12 w-full bg-primary text-base font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary/90"
           >
-            Entrar com Google
+            {busy ? "..." : mode === "signin" ? "Entrar" : "Criar conta"}
           </Button>
-          <p className="mt-4 text-center text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-            Sem conta? A gente cria. Bora.
-          </p>
-        </div>
-      </div>
-    );
-  }
+        </form>
 
-  return <>{children}</>;
+        <button
+          onClick={() => {
+            setMode(mode === "signin" ? "signup" : "signin");
+            setError(null);
+          }}
+          className="mt-5 w-full text-center text-[11px] uppercase tracking-[0.25em] text-muted-foreground transition hover:text-primary"
+        >
+          {mode === "signin" ? (
+            <>
+              Sem conta? <span className="text-primary">Cria agora.</span>
+            </>
+          ) : (
+            <>
+              Já tem conta? <span className="text-primary">Entrar.</span>
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
 }
