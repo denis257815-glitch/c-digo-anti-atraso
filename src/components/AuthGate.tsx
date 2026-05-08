@@ -163,7 +163,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           )}
         </button>
       </div>
-      <BgAdjustPanel {...bg} />
+      
     </div>
   );
 }
