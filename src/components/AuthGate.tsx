@@ -1,6 +1,7 @@
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { useState, type FormEvent, type ReactNode } from "react";
+import loginBg from "@/assets/login-bg.png";
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading, signIn, signUp } = useAuth();
@@ -57,9 +58,15 @@ export function AuthGate({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-5 py-10">
-      <div className="bg-grid pointer-events-none absolute inset-0 opacity-40" />
-      <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/30 blur-[120px]" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-5 py-10">
+      <div
+        className="pointer-events-none absolute inset-0 bg-cover bg-center grayscale"
+        style={{ backgroundImage: `url(${loginBg})` }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/85 to-black" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/90 via-transparent to-black/60" />
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-20" />
+      <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
 
       <div className="relative z-10 w-full max-w-sm">
         <div className="mb-8 flex items-center gap-3">
