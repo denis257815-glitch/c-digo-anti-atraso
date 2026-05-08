@@ -204,7 +204,7 @@ function TablePanel({
   const load = async () => {
     setLoading(true);
     const { data } = await supabase.from(table).select(columns.join(",")).limit(500);
-    setRows((data as Record<string, unknown>[]) ?? []);
+    setRows((data as unknown as Record<string, unknown>[]) ?? []);
     setLoading(false);
   };
   useEffect(() => {
