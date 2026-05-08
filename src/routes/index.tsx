@@ -5,6 +5,8 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { StreakCard, AchievementsPanel } from "@/components/Engagement";
+import { quoteOfDay } from "@/lib/quotes";
 
 function BroadcastBanner() {
   const [b, setB] = useState<{ id: string; title: string; body: string } | null>(null);
@@ -58,14 +60,6 @@ const greetings = [
   "Disciplina agora. Liberdade depois.",
   "Foco no que importa.",
   "Quem quer mudança começa hoje.",
-];
-
-const quotes = [
-  "Pare de viver no atraso.",
-  "Disciplina todo dia.",
-  "Sua vida muda quando sua rotina muda.",
-  "Sem desculpa.",
-  "Quem quer mudança começa na rotina.",
 ];
 
 function Dashboard() {
