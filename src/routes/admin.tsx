@@ -14,17 +14,12 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "dashboard" | "users" | "broadcast" | "tasks" | "habits" | "goals" | "finance" | "routine";
+type Tab = "dashboard" | "users" | "broadcast";
 
 const TABS: { key: Tab; label: string; icon: typeof Users }[] = [
   { key: "dashboard", label: "Visão geral", icon: LayoutDashboard },
   { key: "users", label: "Usuários", icon: Users },
   { key: "broadcast", label: "Broadcast", icon: Megaphone },
-  { key: "tasks", label: "Tarefas", icon: CheckSquare },
-  { key: "habits", label: "Hábitos", icon: Flame },
-  { key: "goals", label: "Metas", icon: Target },
-  { key: "finance", label: "Financeiro", icon: Wallet },
-  { key: "routine", label: "Rotina", icon: Sun },
 ];
 
 function AdminPage() {
