@@ -58,17 +58,20 @@ export function AuthGate({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-5 py-10">
-      <div
-        className="pointer-events-none absolute inset-0 bg-cover bg-center grayscale"
-        style={{ backgroundImage: `url(${loginBg})` }}
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-black px-5 pb-8 pt-6">
+      <img
+        src={loginBg}
+        alt=""
+        loading="eager"
+        decoding="async"
+        className="pointer-events-none absolute left-1/2 top-0 h-[58vh] w-auto max-w-none -translate-x-1/2 object-contain object-top grayscale contrast-125"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/85 to-black" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/90 via-transparent to-black/60" />
-      <div className="bg-grid pointer-events-none absolute inset-0 opacity-20" />
-      <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[60vh] bg-gradient-to-b from-black/30 via-black/50 to-black" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-[0.07]" />
+      <div className="pointer-events-none absolute -left-32 bottom-1/4 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
 
-      <div className="relative z-10 w-full max-w-sm">
+      <div className="relative z-10 mx-auto mt-auto w-full max-w-sm rounded-2xl border border-white/10 bg-black/30 p-6 shadow-2xl backdrop-blur-md">
         <div className="mb-8 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary font-display text-2xl leading-none text-primary-foreground">
             A
@@ -105,7 +108,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+            className="w-full rounded-xl border border-border bg-white/5 px-4 py-3 text-sm backdrop-blur-sm outline-none placeholder:text-muted-foreground focus:border-primary"
           />
           <input
             type="password"
@@ -113,7 +116,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Senha"
-            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+            className="w-full rounded-xl border border-border bg-white/5 px-4 py-3 text-sm backdrop-blur-sm outline-none placeholder:text-muted-foreground focus:border-primary"
           />
           {mode === "signup" && (
             <input
@@ -122,7 +125,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Confirma a senha"
-              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+              className="w-full rounded-xl border border-border bg-white/5 px-4 py-3 text-sm backdrop-blur-sm outline-none placeholder:text-muted-foreground focus:border-primary"
             />
           )}
 
