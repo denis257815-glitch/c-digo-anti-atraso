@@ -12,15 +12,17 @@ export function ScreenHeader({
   right?: ReactNode;
 }) {
   return (
-    <header className="mb-6 flex items-end justify-between gap-4">
-      <div>
+    <header className="mb-7 flex items-end justify-between gap-4">
+      <div className="min-w-0">
         {eyebrow && (
-          <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
+          <div className="mb-2 inline-block border-l-4 border-primary pl-2 text-[10px] font-bold uppercase tracking-[0.28em] text-primary">
             {eyebrow}
           </div>
         )}
-        <h1 className="font-display text-4xl leading-none">{title}</h1>
-        {subtitle && <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>}
+        <h1 className="font-display text-[2.6rem] leading-[0.95]">{title}</h1>
+        {subtitle && (
+          <p className="mt-2 text-sm leading-snug text-muted-foreground">{subtitle}</p>
+        )}
       </div>
       {right}
     </header>
