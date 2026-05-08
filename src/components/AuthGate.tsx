@@ -2,14 +2,11 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { useState, type FormEvent, type ReactNode } from "react";
 import loginBg from "@/assets/login-bg.png";
-
-const BG_MOBILE = { heightPct: 140, posX: 50, posY: 18 };
-const BG_DESKTOP = { heightPct: 100, posX: 50, posY: 88 };
+import { BgAdjustPanel, useBgSettings } from "@/components/BgAdjustPanel";
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading, signIn, signUp } = useAuth();
-  const isMobile = typeof window !== "undefined" ? window.innerWidth < 640 : true;
-  const bg = isMobile ? BG_MOBILE : BG_DESKTOP;
+  const bg = useBgSettings();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,8 +67,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
         aria-hidden
         className="pointer-events-none absolute left-0 top-0 w-full object-cover grayscale contrast-110"
         style={{
-          height: `${bg.heightPct}%`,
-          objectPosition: `${bg.posX}% ${bg.posY}%`,
+          height: `${bg.settings.heightPct}%`,
+          objectPosition: `${bg.settings.posX}% ${bg.settings.posY}%`,
         }}
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(0,0,0,0.35)_0%,rgba(0,0,0,0.75)_55%,rgba(0,0,0,0.98)_100%)]" />
@@ -171,6 +168,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           )}
         </button>
       </div>
+      <BgAdjustPanel {...bg} />
     </div>
   );
 }
