@@ -193,7 +193,7 @@ function Dashboard() {
 
       <div className="mt-10 border-l-4 border-primary py-2 pl-4">
         <p className="font-display text-lg leading-tight tracking-wide">
-          {quotes[new Date().getDate() % quotes.length]}
+          {quoteOfDay()}
         </p>
         <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
           Código Anti-Atraso
