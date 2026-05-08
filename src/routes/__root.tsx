@@ -1,10 +1,11 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { PremiumProvider, usePremium } from "@/lib/premium";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { useIsAdmin } from "@/lib/useIsAdmin";
 import { AuthGate } from "@/components/AuthGate";
 import { BottomNav } from "@/components/BottomNav";
 import { Paywall } from "@/components/Paywall";
-import { Crown, LogOut } from "lucide-react";
+import { Crown, LogOut, Shield } from "lucide-react";
 
 import appCss from "../styles.css?url";
 
@@ -116,6 +117,7 @@ function AppShell() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <AdminButton />
             <PremiumBadge />
             <SignOutButton />
           </div>
@@ -142,6 +144,20 @@ function SignOutButton() {
     >
       <LogOut className="h-3.5 w-3.5" />
     </button>
+  );
+}
+
+function AdminButton() {
+  const { isAdmin } = useIsAdmin();
+  if (!isAdmin) return null;
+  return (
+    <Link
+      to="/admin"
+      aria-label="Painel admin"
+      className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-primary/20"
+    >
+      <Shield className="h-3 w-3" /> Admin
+    </Link>
   );
 }
 

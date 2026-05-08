@@ -13,6 +13,7 @@ import { Route as RotinaRouteImport } from './routes/rotina'
 import { Route as MetasRouteImport } from './routes/metas'
 import { Route as HabitosRouteImport } from './routes/habitos'
 import { Route as FinanceiroRouteImport } from './routes/financeiro'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const RotinaRoute = RotinaRouteImport.update({
@@ -35,6 +36,11 @@ const FinanceiroRoute = FinanceiroRouteImport.update({
   path: '/financeiro',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/financeiro': typeof FinanceiroRoute
   '/habitos': typeof HabitosRoute
   '/metas': typeof MetasRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/financeiro': typeof FinanceiroRoute
   '/habitos': typeof HabitosRoute
   '/metas': typeof MetasRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/financeiro': typeof FinanceiroRoute
   '/habitos': typeof HabitosRoute
   '/metas': typeof MetasRoute
@@ -65,14 +74,22 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
+  fullPaths: '/' | '/admin' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
-  id: '__root__' | '/' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
+  to: '/' | '/admin' | '/financeiro' | '/habitos' | '/metas' | '/rotina'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/financeiro'
+    | '/habitos'
+    | '/metas'
+    | '/rotina'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   FinanceiroRoute: typeof FinanceiroRoute
   HabitosRoute: typeof HabitosRoute
   MetasRoute: typeof MetasRoute
@@ -109,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FinanceiroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +145,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   FinanceiroRoute: FinanceiroRoute,
   HabitosRoute: HabitosRoute,
   MetasRoute: MetasRoute,
