@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Shield, ArrowLeft, Trash2, Search, Users, CheckSquare, Flame, Target, Wallet, Sun,
+  Shield, ArrowLeft, Trash2, Search, Users, CheckSquare, Flame, Target,
   LayoutDashboard, Download, TrendingUp, TrendingDown, Activity, UserPlus, Trophy, Megaphone, Send,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
