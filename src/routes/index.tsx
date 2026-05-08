@@ -1,10 +1,44 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Check } from "lucide-react";
+import { Plus, Trash2, Check, Megaphone, X } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+
+function BroadcastBanner() {
+  const [b, setB] = useState<{ id: string; title: string; body: string } | null>(null);
+  useEffect(() => {
+    supabase
+      .from("broadcasts")
+      .select("id,title,body")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!data) return;
+        if (localStorage.getItem("broadcast_dismissed") === data.id) return;
+        setB(data);
+      });
+  }, []);
+  if (!b) return null;
+  return (
+    <div className="relative mb-5 overflow-hidden rounded-2xl border border-primary/40 bg-primary/10 p-4">
+      <button
+        onClick={() => { localStorage.setItem("broadcast_dismissed", b.id); setB(null); }}
+        className="absolute right-2 top-2 text-primary/70 hover:text-primary"
+        aria-label="Fechar"
+      >
+        <X className="h-4 w-4" />
+      </button>
+      <div className="mb-1 flex items-center gap-2 text-primary">
+        <Megaphone className="h-3.5 w-3.5" />
+        <span className="text-[10px] font-bold uppercase tracking-[0.25em]">{b.title}</span>
+      </div>
+      <p className="whitespace-pre-wrap text-sm text-foreground">{b.body}</p>
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -85,6 +119,8 @@ function Dashboard() {
         eyebrow={new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "short" })}
         title={greeting}
       />
+
+      <BroadcastBanner />
 
       <div className="relative mb-7 overflow-hidden rounded-2xl border border-border bg-surface p-5">
         <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/15 blur-2xl" />
