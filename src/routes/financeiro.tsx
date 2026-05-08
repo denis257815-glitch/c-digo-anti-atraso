@@ -70,7 +70,7 @@ function Financeiro() {
 
   return (
     <div>
-      <ScreenHeader eyebrow="Controle financeiro" title="A grana fala." subtitle="Sem controle, sem futuro." />
+      <ScreenHeader eyebrow="Grana" title="A grana fala." subtitle="Sem controle, sem futuro." />
 
       <div className="mb-6 rounded-2xl border border-border bg-surface p-5">
         <div className="text-xs uppercase tracking-widest text-muted-foreground">Saldo atual</div>

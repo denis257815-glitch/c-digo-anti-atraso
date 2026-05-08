@@ -37,53 +37,55 @@
 
   --font-display: "Bebas Neue", "Impact", sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --shadow-glow: 0 0 24px -4px var(--primary);
+  --shadow-glow: 0 0 32px -6px var(--primary);
   --shadow-card: 0 4px 16px -4px rgb(0 0 0 / 0.5);
+  --shadow-hard: 6px 6px 0 0 var(--primary);
 }
 
 :root {
   --radius: 0.875rem;
 
-  /* Pure dark base */
-  --background: oklch(0.13 0.005 240);
-  --foreground: oklch(0.97 0 0);
+  /* Pure black base — concrete / asphalt */
+  --background: oklch(0.11 0.004 240);
+  --foreground: oklch(0.98 0 0);
 
-  --surface: oklch(0.18 0.005 240);
-  --surface-elevated: oklch(0.22 0.005 240);
+  --surface: oklch(0.16 0.004 240);
+  --surface-elevated: oklch(0.20 0.004 240);
 
-  --card: oklch(0.18 0.005 240);
-  --card-foreground: oklch(0.97 0 0);
-  --popover: oklch(0.18 0.005 240);
-  --popover-foreground: oklch(0.97 0 0);
+  --card: oklch(0.16 0.004 240);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.16 0.004 240);
+  --popover-foreground: oklch(0.98 0 0);
 
-  /* Bold red */
-  --primary: oklch(0.62 0.24 25);
-  --primary-foreground: oklch(0.98 0 0);
+  /* Bold blood red */
+  --primary: oklch(0.60 0.245 27);
+  --primary-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.25 0.005 240);
-  --secondary-foreground: oklch(0.97 0 0);
+  --secondary: oklch(0.22 0.004 240);
+  --secondary-foreground: oklch(0.98 0 0);
 
-  --muted: oklch(0.22 0.005 240);
-  --muted-foreground: oklch(0.62 0.01 240);
+  --muted: oklch(0.20 0.004 240);
+  --muted-foreground: oklch(0.60 0.008 240);
 
-  --accent: oklch(0.62 0.24 25);
-  --accent-foreground: oklch(0.98 0 0);
+  --accent: oklch(0.60 0.245 27);
+  --accent-foreground: oklch(0.99 0 0);
 
-  --success: oklch(0.7 0.18 145);
+  --success: oklch(0.72 0.17 145);
   --success-foreground: oklch(0.13 0 0);
 
-  --destructive: oklch(0.62 0.24 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.60 0.245 27);
+  --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.27 0.005 240);
-  --input: oklch(0.22 0.005 240);
-  --ring: oklch(0.62 0.24 25);
+  --border: oklch(0.24 0.004 240);
+  --input: oklch(0.20 0.004 240);
+  --ring: oklch(0.60 0.245 27);
 }
 
 .dark {
-  --background: oklch(0.13 0.005 240);
-  --foreground: oklch(0.97 0 0);
+  --background: oklch(0.11 0.004 240);
+  --foreground: oklch(0.98 0 0);
 }
 
 @layer base {
@@ -99,6 +101,17 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Subtle grain across the whole app for a gritty/urban feel */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
   h1,
   h2,
   h3,
@@ -111,7 +124,7 @@
 
 @layer utilities {
   .text-gradient-red {
-    background: linear-gradient(135deg, oklch(0.7 0.24 25), oklch(0.55 0.22 20));
+    background: linear-gradient(135deg, oklch(0.72 0.245 27), oklch(0.5 0.22 22));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -119,12 +132,26 @@
 
   .bg-grid {
     background-image:
-      linear-gradient(to right, oklch(0.2 0.005 240) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(0.2 0.005 240) 1px, transparent 1px);
-    background-size: 32px 32px;
+      linear-gradient(to right, oklch(0.18 0.004 240) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.18 0.004 240) 1px, transparent 1px);
+    background-size: 28px 28px;
   }
 
   .glow-red {
-    box-shadow: 0 0 32px -8px oklch(0.62 0.24 25 / 0.6);
+    box-shadow: 0 0 40px -10px oklch(0.6 0.245 27 / 0.7);
+  }
+
+  .stripe-tape {
+    background-image: repeating-linear-gradient(
+      135deg,
+      var(--primary) 0 12px,
+      transparent 12px 24px
+    );
+  }
+
+  .text-stencil {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 }

@@ -59,7 +59,7 @@ function Metas() {
 
   return (
     <div>
-      <ScreenHeader eyebrow="Metas da semana" title="O que você vai bater?" subtitle="Sem meta, sem direção." />
+      <ScreenHeader eyebrow="Metas da semana" title="O que vai bater?" subtitle="Sem meta, sem direção." />
 
       <div className="mb-6 flex items-center gap-4 rounded-2xl border border-border bg-surface p-5">
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
@@ -109,7 +109,12 @@ function Metas() {
         </Button>
       </div>
 
-      <p className="mt-8 text-center font-display text-sm tracking-widest text-muted-foreground">"Foco no que importa."</p>
+      <div className="mt-10 border-l-4 border-primary py-2 pl-4">
+        <p className="font-display text-lg leading-tight tracking-wide">Foco no que importa.</p>
+        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+          Meta sem ação é desejo.
+        </p>
+      </div>
     </div>
   );
 }

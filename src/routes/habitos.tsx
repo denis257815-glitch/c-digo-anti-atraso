@@ -95,10 +95,12 @@ function Habitos() {
 
   return (
     <div>
-      <ScreenHeader eyebrow="Hábitos" title="Constrói. Repete. Vence." subtitle="Marca o que fez hoje. Mantém a sequência." />
+      <ScreenHeader eyebrow="Hábitos" title="Constrói. Repete. Vence." subtitle="Marca o que fez. Não quebra a sequência." />
 
       {habits.length === 0 ? (
-        <p className="py-8 text-center text-sm text-muted-foreground">Adiciona o primeiro hábito.</p>
+        <p className="py-10 text-center text-sm text-muted-foreground">
+          Sem hábito ainda. Começa por um. Só um.
+        </p>
       ) : (
         <ul className="space-y-3">
           {habits.map((h) => {

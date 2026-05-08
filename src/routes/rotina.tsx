@@ -17,9 +17,9 @@ export const Route = createFileRoute("/rotina")({
 });
 
 const blocks = [
-  { key: "manha", label: "Manhã", icon: Sun, items: ["Acordar no horário", "Definir foco do dia", "Evitar celular ao acordar"] },
-  { key: "dia", label: "Dia", icon: Coffee, items: ["Executar tarefas principais", "Evitar distrações", "Manter o foco"] },
-  { key: "noite", label: "Noite", icon: Moon, items: ["Revisar o dia", "Planejar o próximo dia", "Desligar o celular cedo"] },
+  { key: "manha", label: "Manhã", icon: Sun, items: ["Acordar no horário", "Definir o foco do dia", "Não pegar o celular ao acordar"] },
+  { key: "dia", label: "Dia", icon: Coffee, items: ["Bater as tarefas principais", "Cortar distração", "Manter o foco"] },
+  { key: "noite", label: "Noite", icon: Moon, items: ["Revisar o dia", "Planejar o próximo", "Desligar o celular cedo"] },
 ] as const;
 
 function Rotina() {
@@ -55,7 +55,7 @@ function Rotina() {
 
   return (
     <div>
-      <ScreenHeader eyebrow="Rotina diária" title="Estrutura do dia" subtitle="Sem rotina, sem disciplina." />
+      <ScreenHeader eyebrow="Rotina" title="Estrutura do dia" subtitle="Sem rotina, sem disciplina." />
 
       <div className="space-y-5">
         {blocks.map((b) => {
@@ -98,9 +98,12 @@ function Rotina() {
         })}
       </div>
 
-      <p className="mt-8 text-center font-display text-sm tracking-widest text-muted-foreground">
-        "Disciplina todo dia."
-      </p>
+      <div className="mt-10 border-l-4 border-primary py-2 pl-4">
+        <p className="font-display text-lg leading-tight tracking-wide">Disciplina todo dia.</p>
+        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+          Pequenas ações. Grandes mudanças.
+        </p>
+      </div>
     </div>
   );
 }
