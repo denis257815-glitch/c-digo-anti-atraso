@@ -107,7 +107,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+            className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
           />
           <input
             type="password"
@@ -115,7 +115,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Senha"
-            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+            className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
           />
           {mode === "signup" && (
             <input
@@ -124,7 +124,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Confirma a senha"
-              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+              className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
             />
           )}
 
