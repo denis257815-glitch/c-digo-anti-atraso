@@ -64,14 +64,14 @@ export function AuthGate({ children }: { children: ReactNode }) {
         alt=""
         loading="eager"
         decoding="async"
-        className="pointer-events-none absolute left-1/2 top-0 h-[58vh] w-auto max-w-none -translate-x-1/2 object-contain object-top grayscale contrast-125"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top grayscale contrast-125"
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[60vh] bg-gradient-to-b from-black/30 via-black/50 to-black" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[55vh] bg-gradient-to-b from-black/20 via-black/40 to-black" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black" />
       <div className="bg-grid pointer-events-none absolute inset-0 opacity-[0.07]" />
       <div className="pointer-events-none absolute -left-32 bottom-1/4 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
 
-      <div className="relative z-10 mx-auto mt-auto w-full max-w-sm rounded-2xl border border-white/10 bg-black/30 p-6 shadow-2xl backdrop-blur-md">
+      <div className="relative z-10 mx-auto mt-auto w-full max-w-sm">
         <div className="mb-8 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary font-display text-2xl leading-none text-primary-foreground">
             A
