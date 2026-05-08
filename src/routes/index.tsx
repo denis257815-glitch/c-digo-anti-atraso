@@ -19,10 +19,19 @@ export const Route = createFileRoute("/")({
 type Task = { id: string; text: string; done: boolean };
 
 const greetings = [
-  "Bora sair do atraso hoje?",
-  "Sem desculpa. Bora.",
-  "Disciplina hoje, liberdade amanhã.",
+  "Bora sair do atraso.",
+  "Sem desculpa. Hoje é dia.",
+  "Disciplina agora. Liberdade depois.",
   "Foco no que importa.",
+  "Quem quer mudança começa hoje.",
+];
+
+const quotes = [
+  "Pare de viver no atraso.",
+  "Disciplina todo dia.",
+  "Sua vida muda quando sua rotina muda.",
+  "Sem desculpa.",
+  "Quem quer mudança começa na rotina.",
 ];
 
 function Dashboard() {
@@ -72,26 +81,46 @@ function Dashboard() {
 
   return (
     <div>
-      <ScreenHeader eyebrow={new Date().toLocaleDateString("pt-BR", { weekday: "long" })} title={greeting} />
+      <ScreenHeader
+        eyebrow={new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "short" })}
+        title={greeting}
+      />
 
-      <div className="mb-6 rounded-2xl border border-border bg-surface p-5">
-        <div className="mb-3 flex items-end justify-between">
+      <div className="relative mb-7 overflow-hidden rounded-2xl border border-border bg-surface p-5">
+        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/15 blur-2xl" />
+        <div className="relative mb-4 flex items-end justify-between">
           <div>
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">
+            <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-muted-foreground">
               Progresso do dia
             </div>
-            <div className="font-display text-3xl">
-              {done}<span className="text-muted-foreground">/{total}</span>
+            <div className="mt-1 font-display text-4xl leading-none">
+              {done}
+              <span className="text-muted-foreground">/{total}</span>
             </div>
           </div>
-          <div className="font-display text-3xl text-primary">{pct}%</div>
+          <div className="text-right">
+            <div className="font-display text-5xl leading-none text-primary">{pct}%</div>
+            <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.28em] text-muted-foreground">
+              {pct === 100 ? "Bateu meta" : pct >= 50 ? "Bora terminar" : "Ainda dá tempo"}
+            </div>
+          </div>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-muted">
-          <div className="h-full bg-primary transition-all duration-500" style={{ width: `${pct}%` }} />
+        <div className="relative h-1.5 overflow-hidden rounded-full bg-background">
+          <div
+            className="h-full bg-primary transition-all duration-700"
+            style={{ width: `${pct}%` }}
+          />
         </div>
       </div>
 
-      <h2 className="mb-3 font-display text-xl">Checklist do dia</h2>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="font-display text-2xl leading-none">Checklist do dia</h2>
+        {total > 0 && (
+          <span className="font-display text-xs tracking-[0.2em] text-muted-foreground">
+            {total - done} restantes
+          </span>
+        )}
+      </div>
       {tasks.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
           Sem tarefas. Adiciona a primeira.
@@ -132,9 +161,14 @@ function Dashboard() {
         </Button>
       </div>
 
-      <p className="mt-8 text-center font-display text-sm tracking-widest text-muted-foreground">
-        "Pare de viver no atraso."
-      </p>
+      <div className="mt-10 border-l-4 border-primary py-2 pl-4">
+        <p className="font-display text-lg leading-tight tracking-wide">
+          {quotes[new Date().getDate() % quotes.length]}
+        </p>
+        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+          Código Anti-Atraso
+        </p>
+      </div>
     </div>
   );
 }
