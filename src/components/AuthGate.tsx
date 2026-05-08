@@ -70,8 +70,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
         aria-hidden
         className="pointer-events-none absolute left-0 top-0 w-full object-cover grayscale contrast-110"
         style={{
-          height: `${bg.settings.heightPct}%`,
-          objectPosition: `${bg.settings.posX}% ${bg.settings.posY}%`,
+          height: `${bg.heightPct}%`,
+          objectPosition: `${bg.posX}% ${bg.posY}%`,
         }}
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(0,0,0,0.35)_0%,rgba(0,0,0,0.75)_55%,rgba(0,0,0,0.98)_100%)]" />
@@ -171,7 +171,6 @@ export function AuthGate({ children }: { children: ReactNode }) {
           )}
         </button>
       </div>
-      <BgAdjustPanel {...bg} />
     </div>
   );
 }
