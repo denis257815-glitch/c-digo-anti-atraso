@@ -90,13 +90,6 @@ function AdminPage() {
       {tab === "dashboard" && <DashboardPanel />}
       {tab === "users" && <UsersPanel />}
       {tab === "broadcast" && <BroadcastPanel />}
-      {tab === "tasks" && <TablePanel table="tasks" columns={["id", "user_id", "text", "done", "created_at"]} />}
-      {tab === "habits" && <TablePanel table="habits" columns={["id", "user_id", "name", "created_at"]} />}
-      {tab === "goals" && <TablePanel table="goals" columns={["id", "user_id", "text", "done", "created_at"]} />}
-      {tab === "finance" && (
-        <TablePanel table="finance_entries" columns={["id", "user_id", "type", "description", "value", "entry_date"]} />
-      )}
-      {tab === "routine" && <TablePanel table="routine_checks" columns={["user_id", "date", "item_key", "done"]} pkCols={["user_id","date","item_key"]} />}
     </div>
   );
 }
