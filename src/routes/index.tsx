@@ -201,6 +201,8 @@ function Dashboard() {
           Código Anti-Atraso
         </p>
       </div>
+
+      <AchievementsPanel />
     </div>
   );
 }
