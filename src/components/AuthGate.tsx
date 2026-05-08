@@ -6,6 +6,7 @@ import { BgAdjustPanel, useBgSettings } from "@/components/BgAdjustPanel";
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading, signIn, signUp } = useAuth();
+  const bg = useBgSettings();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
