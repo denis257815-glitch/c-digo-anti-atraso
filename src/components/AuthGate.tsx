@@ -2,11 +2,14 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { useState, type FormEvent, type ReactNode } from "react";
 import loginBg from "@/assets/login-bg.png";
-import { BgAdjustPanel, useBgSettings } from "@/components/BgAdjustPanel";
+
+const BG_MOBILE = { heightPct: 140, posX: 50, posY: 18 };
+const BG_DESKTOP = { heightPct: 100, posX: 50, posY: 88 };
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading, signIn, signUp } = useAuth();
-  const bg = useBgSettings();
+  const isMobile = typeof window !== "undefined" ? window.innerWidth < 640 : true;
+  const bg = isMobile ? BG_MOBILE : BG_DESKTOP;
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
