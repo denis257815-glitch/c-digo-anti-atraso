@@ -96,11 +96,11 @@ export function AuthGate({ children }: { children: ReactNode }) {
             </>
           )}
         </h1>
-        <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-white/80 [text-shadow:0_1px_8px_rgba(0,0,0,0.8)]">
           Disciplina todo dia. Rotina, hábitos e foco num só lugar.
         </p>
 
-        <form onSubmit={submit} className="mt-7 space-y-3">
+        <form onSubmit={submit} className="mt-7 space-y-3 [&_input]:font-medium [&_input]:tracking-wide">
           <input
             type="email"
             autoComplete="email"
