@@ -71,10 +71,6 @@ export function AuthGate({ children }: { children: ReactNode }) {
       <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
 
       <div className="relative z-10 w-full max-w-sm">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -inset-6 -z-10 rounded-3xl bg-black/55 backdrop-blur-md [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_100%)] [-webkit-mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_100%)]"
-        />
         <div className="mb-8 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary font-display text-2xl leading-none text-primary-foreground">
             A
