@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { StreakCard, AchievementsPanel } from "@/components/Engagement";
+import { ProgressChart, WeeklyRecap } from "@/components/Progress";
 import { quoteOfDay } from "@/lib/quotes";
 
 function BroadcastBanner() {
@@ -202,6 +203,8 @@ function Dashboard() {
         </p>
       </div>
 
+      <WeeklyRecap />
+      <ProgressChart days={14} />
       <AchievementsPanel />
     </div>
   );
