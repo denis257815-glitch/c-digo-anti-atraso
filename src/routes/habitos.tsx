@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Flame } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { PremiumGate } from "@/components/PremiumGate";
-import { loadState, saveState, todayKey } from "@/lib/storage";
+import { todayKey } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/habitos")({
   head: () => ({
@@ -16,18 +18,7 @@ export const Route = createFileRoute("/habitos")({
   component: HabitosPage,
 });
 
-type Habit = {
-  id: string;
-  name: string;
-  history: string[]; // dates "YYYY-MM-DD"
-};
-
-const KEY = "aa.habitos";
-const DEFAULT: Habit[] = [
-  { id: "h1", name: "Acordar 6h", history: [] },
-  { id: "h2", name: "Sem rede social de manhã", history: [] },
-  { id: "h3", name: "30 min de leitura", history: [] },
-];
+type Habit = { id: string; name: string; history: string[] };
 
 function streak(history: string[]): number {
   if (!history.length) return 0;
@@ -45,84 +36,99 @@ function streak(history: string[]): number {
 }
 
 function Habitos() {
-  const [habits, setHabits] = useState<Habit[]>(DEFAULT);
+  const { user } = useAuth();
+  const [habits, setHabits] = useState<Habit[]>([]);
   const [input, setInput] = useState("");
   const today = todayKey();
 
-  useEffect(() => {
-    setHabits(loadState<Habit[]>(KEY, DEFAULT));
-  }, []);
+  const reload = async () => {
+    if (!user) return;
+    const { data: hs } = await supabase.from("habits").select("id,name").order("created_at");
+    const { data: logs } = await supabase.from("habit_logs").select("habit_id,date");
+    const byHabit: Record<string, string[]> = {};
+    (logs ?? []).forEach((l) => {
+      (byHabit[l.habit_id] ??= []).push(l.date);
+    });
+    setHabits((hs ?? []).map((h) => ({ id: h.id, name: h.name, history: byHabit[h.id] ?? [] })));
+  };
 
   useEffect(() => {
-    saveState(KEY, habits);
-  }, [habits]);
+    reload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
-  const toggleToday = (id: string) =>
+  const toggleToday = async (id: string) => {
+    if (!user) return;
+    const habit = habits.find((h) => h.id === id);
+    if (!habit) return;
+    const has = habit.history.includes(today);
     setHabits((hs) =>
       hs.map((h) =>
         h.id === id
-          ? {
-              ...h,
-              history: h.history.includes(today)
-                ? h.history.filter((d) => d !== today)
-                : [...h.history, today],
-            }
+          ? { ...h, history: has ? h.history.filter((d) => d !== today) : [...h.history, today] }
           : h,
       ),
     );
-
-  const add = () => {
-    if (!input.trim()) return;
-    setHabits((hs) => [...hs, { id: crypto.randomUUID(), name: input.trim(), history: [] }]);
-    setInput("");
+    if (has) {
+      await supabase.from("habit_logs").delete().eq("habit_id", id).eq("date", today);
+    } else {
+      await supabase.from("habit_logs").insert({ habit_id: id, user_id: user.id, date: today });
+    }
   };
 
-  const remove = (id: string) => setHabits((hs) => hs.filter((h) => h.id !== id));
+  const add = async () => {
+    if (!input.trim() || !user) return;
+    const name = input.trim();
+    setInput("");
+    const { data } = await supabase
+      .from("habits")
+      .insert({ user_id: user.id, name })
+      .select("id,name")
+      .single();
+    if (data) setHabits((hs) => [...hs, { id: data.id, name: data.name, history: [] }]);
+  };
+
+  const remove = async (id: string) => {
+    setHabits((hs) => hs.filter((h) => h.id !== id));
+    await supabase.from("habits").delete().eq("id", id);
+  };
 
   return (
     <div>
-      <ScreenHeader
-        eyebrow="Hábitos"
-        title="Constrói. Repete. Vence."
-        subtitle="Marca o que fez hoje. Mantém a sequência."
-      />
+      <ScreenHeader eyebrow="Hábitos" title="Constrói. Repete. Vence." subtitle="Marca o que fez hoje. Mantém a sequência." />
 
-      <ul className="space-y-3">
-        {habits.map((h) => {
-          const doneToday = h.history.includes(today);
-          const s = streak(h.history);
-          return (
-            <li
-              key={h.id}
-              className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4"
-            >
-              <button
-                onClick={() => toggleToday(h.id)}
-                className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl border-2 transition ${
-                  doneToday
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border hover:border-primary/60"
-                }`}
-              >
-                <Flame className="h-4 w-4" />
-                <span className="text-[10px] font-bold leading-none">{s}d</span>
-              </button>
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold truncate">{h.name}</div>
-                <div className="text-xs text-muted-foreground">
-                  {doneToday ? "Concluído hoje" : "Marca quando fizer"} · sequência {s} dias
+      {habits.length === 0 ? (
+        <p className="py-8 text-center text-sm text-muted-foreground">Adiciona o primeiro hábito.</p>
+      ) : (
+        <ul className="space-y-3">
+          {habits.map((h) => {
+            const doneToday = h.history.includes(today);
+            const s = streak(h.history);
+            return (
+              <li key={h.id} className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4">
+                <button
+                  onClick={() => toggleToday(h.id)}
+                  className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl border-2 transition ${
+                    doneToday ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary/60"
+                  }`}
+                >
+                  <Flame className="h-4 w-4" />
+                  <span className="text-[10px] font-bold leading-none">{s}d</span>
+                </button>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold truncate">{h.name}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {doneToday ? "Concluído hoje" : "Marca quando fizer"} · sequência {s} dias
+                  </div>
                 </div>
-              </div>
-              <button
-                onClick={() => remove(h.id)}
-                className="text-muted-foreground hover:text-primary"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+                <button onClick={() => remove(h.id)} className="text-muted-foreground hover:text-primary">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       <div className="mt-4 flex gap-2">
         <input
@@ -142,10 +148,7 @@ function Habitos() {
 
 function HabitosPage() {
   return (
-    <PremiumGate
-      title="Hábitos com sequência"
-      description="Histórico, streak e salvamento de progresso liberado no Premium."
-    >
+    <PremiumGate title="Hábitos com sequência" description="Histórico, streak e salvamento de progresso liberado no Premium.">
       <Habitos />
     </PremiumGate>
   );
