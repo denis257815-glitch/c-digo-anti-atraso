@@ -65,9 +65,9 @@ export function AuthGate({ children }: { children: ReactNode }) {
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center grayscale contrast-110"
       />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_55%,rgba(0,0,0,0.95)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/95" />
-      <div className="bg-grid pointer-events-none absolute inset-0 opacity-10" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.85)_60%,rgba(0,0,0,0.98)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black" />
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-[0.07]" />
       <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
 
       <div className="relative z-10 w-full max-w-sm">
