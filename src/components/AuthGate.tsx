@@ -65,9 +65,9 @@ export function AuthGate({ children }: { children: ReactNode }) {
         aria-hidden
         className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center grayscale contrast-110"
       />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_55%,rgba(0,0,0,0.95)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/95" />
-      <div className="bg-grid pointer-events-none absolute inset-0 opacity-10" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.85)_60%,rgba(0,0,0,0.98)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black" />
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-[0.07]" />
       <div className="pointer-events-none absolute -left-32 top-1/3 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
 
       <div className="relative z-10 w-full max-w-sm">
@@ -96,18 +96,18 @@ export function AuthGate({ children }: { children: ReactNode }) {
             </>
           )}
         </h1>
-        <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-white/80 [text-shadow:0_1px_8px_rgba(0,0,0,0.8)]">
           Disciplina todo dia. Rotina, hábitos e foco num só lugar.
         </p>
 
-        <form onSubmit={submit} className="mt-7 space-y-3">
+        <form onSubmit={submit} className="mt-7 space-y-3 [&_input]:font-medium [&_input]:tracking-wide">
           <input
             type="email"
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
+            className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
           />
           <input
             type="password"
@@ -115,7 +115,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Senha"
-            className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
+            className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
           />
           {mode === "signup" && (
             <input
@@ -124,7 +124,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Confirma a senha"
-              className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
+              className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
             />
           )}
 
