@@ -5,6 +5,8 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { StreakCard, AchievementsPanel } from "@/components/Engagement";
+import { quoteOfDay } from "@/lib/quotes";
 
 function BroadcastBanner() {
   const [b, setB] = useState<{ id: string; title: string; body: string } | null>(null);
@@ -60,14 +62,6 @@ const greetings = [
   "Quem quer mudança começa hoje.",
 ];
 
-const quotes = [
-  "Pare de viver no atraso.",
-  "Disciplina todo dia.",
-  "Sua vida muda quando sua rotina muda.",
-  "Sem desculpa.",
-  "Quem quer mudança começa na rotina.",
-];
-
 function Dashboard() {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -121,6 +115,8 @@ function Dashboard() {
       />
 
       <BroadcastBanner />
+
+      <StreakCard />
 
       <div className="relative mb-7 overflow-hidden rounded-2xl border border-border bg-surface p-5">
         <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/15 blur-2xl" />
@@ -199,12 +195,14 @@ function Dashboard() {
 
       <div className="mt-10 border-l-4 border-primary py-2 pl-4">
         <p className="font-display text-lg leading-tight tracking-wide">
-          {quotes[new Date().getDate() % quotes.length]}
+          {quoteOfDay()}
         </p>
         <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
           Código Anti-Atraso
         </p>
       </div>
+
+      <AchievementsPanel />
     </div>
   );
 }
