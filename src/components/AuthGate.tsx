@@ -1,6 +1,7 @@
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { useState, type FormEvent, type ReactNode } from "react";
+import loginBg from "@/assets/login-bg.png";
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading, signIn, signUp } = useAuth();
