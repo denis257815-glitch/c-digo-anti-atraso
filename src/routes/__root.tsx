@@ -1,8 +1,10 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { PremiumProvider, usePremium } from "@/lib/premium";
+import { AuthProvider, useAuth } from "@/lib/auth";
+import { AuthGate } from "@/components/AuthGate";
 import { BottomNav } from "@/components/BottomNav";
 import { Paywall } from "@/components/Paywall";
-import { Crown } from "lucide-react";
+import { Crown, LogOut } from "lucide-react";
 
 import appCss from "../styles.css?url";
 
@@ -113,7 +115,10 @@ function AppShell() {
               <span className="text-primary">Anti-Atraso</span>
             </div>
           </div>
-          <PremiumBadge />
+          <div className="flex items-center gap-2">
+            <PremiumBadge />
+            <SignOutButton />
+          </div>
         </div>
 
         <main className="flex-1 px-5 pb-28 pt-6">
@@ -127,10 +132,27 @@ function AppShell() {
   );
 }
 
+function SignOutButton() {
+  const { signOut } = useAuth();
+  return (
+    <button
+      onClick={signOut}
+      aria-label="Sair"
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
+    >
+      <LogOut className="h-3.5 w-3.5" />
+    </button>
+  );
+}
+
 function RootComponent() {
   return (
-    <PremiumProvider>
-      <AppShell />
-    </PremiumProvider>
+    <AuthProvider>
+      <PremiumProvider>
+        <AuthGate>
+          <AppShell />
+        </AuthGate>
+      </PremiumProvider>
+    </AuthProvider>
   );
 }

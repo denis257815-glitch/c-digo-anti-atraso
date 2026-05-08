@@ -2,8 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Check } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { loadState, saveState } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,13 +18,6 @@ export const Route = createFileRoute("/")({
 
 type Task = { id: string; text: string; done: boolean };
 
-const KEY = "aa.tasks";
-const DEFAULT: Task[] = [
-  { id: "1", text: "Acordar no horário", done: false },
-  { id: "2", text: "Tarefa principal do dia", done: false },
-  { id: "3", text: "Revisar o dia", done: false },
-];
-
 const greetings = [
   "Bora sair do atraso hoje?",
   "Sem desculpa. Bora.",
@@ -32,26 +26,44 @@ const greetings = [
 ];
 
 function Dashboard() {
-  const [tasks, setTasks] = useState<Task[]>(DEFAULT);
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [input, setInput] = useState("");
   const [greeting, setGreeting] = useState(greetings[0]);
 
   useEffect(() => {
-    setTasks(loadState<Task[]>(KEY, DEFAULT));
     setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
   }, []);
 
   useEffect(() => {
-    saveState(KEY, tasks);
-  }, [tasks]);
+    if (!user) return;
+    supabase
+      .from("tasks")
+      .select("id,text,done")
+      .order("created_at", { ascending: true })
+      .then(({ data }) => setTasks(data ?? []));
+  }, [user]);
 
-  const toggle = (id: string) =>
-    setTasks((t) => t.map((x) => (x.id === id ? { ...x, done: !x.done } : x)));
-  const remove = (id: string) => setTasks((t) => t.filter((x) => x.id !== id));
-  const add = () => {
-    if (!input.trim()) return;
-    setTasks((t) => [...t, { id: crypto.randomUUID(), text: input.trim(), done: false }]);
+  const toggle = async (id: string, done: boolean) => {
+    setTasks((t) => t.map((x) => (x.id === id ? { ...x, done: !done } : x)));
+    await supabase.from("tasks").update({ done: !done }).eq("id", id);
+  };
+
+  const remove = async (id: string) => {
+    setTasks((t) => t.filter((x) => x.id !== id));
+    await supabase.from("tasks").delete().eq("id", id);
+  };
+
+  const add = async () => {
+    if (!input.trim() || !user) return;
+    const text = input.trim();
     setInput("");
+    const { data } = await supabase
+      .from("tasks")
+      .insert({ user_id: user.id, text })
+      .select("id,text,done")
+      .single();
+    if (data) setTasks((t) => [...t, data]);
   };
 
   const done = tasks.filter((t) => t.done).length;
@@ -75,48 +87,37 @@ function Dashboard() {
           <div className="font-display text-3xl text-primary">{pct}%</div>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full bg-primary transition-all duration-500"
-            style={{ width: `${pct}%` }}
-          />
+          <div className="h-full bg-primary transition-all duration-500" style={{ width: `${pct}%` }} />
         </div>
       </div>
 
       <h2 className="mb-3 font-display text-xl">Checklist do dia</h2>
-      <ul className="space-y-2">
-        {tasks.map((t) => (
-          <li
-            key={t.id}
-            className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4"
-          >
-            <button
-              onClick={() => toggle(t.id)}
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border-2 transition ${
-                t.done
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border hover:border-primary/60"
-              }`}
-              aria-label="Marcar concluída"
-            >
-              {t.done && <Check className="h-4 w-4" />}
-            </button>
-            <span
-              className={`flex-1 text-sm ${
-                t.done ? "text-muted-foreground line-through" : "text-foreground"
-              }`}
-            >
-              {t.text}
-            </span>
-            <button
-              onClick={() => remove(t.id)}
-              className="text-muted-foreground hover:text-primary"
-              aria-label="Remover"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </li>
-        ))}
-      </ul>
+      {tasks.length === 0 ? (
+        <p className="py-8 text-center text-sm text-muted-foreground">
+          Sem tarefas. Adiciona a primeira.
+        </p>
+      ) : (
+        <ul className="space-y-2">
+          {tasks.map((t) => (
+            <li key={t.id} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4">
+              <button
+                onClick={() => toggle(t.id, t.done)}
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border-2 transition ${
+                  t.done ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary/60"
+                }`}
+              >
+                {t.done && <Check className="h-4 w-4" />}
+              </button>
+              <span className={`flex-1 text-sm ${t.done ? "text-muted-foreground line-through" : "text-foreground"}`}>
+                {t.text}
+              </span>
+              <button onClick={() => remove(t.id)} className="text-muted-foreground hover:text-primary">
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="mt-4 flex gap-2">
         <input
