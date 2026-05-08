@@ -111,7 +111,7 @@ type TopUser = { user_id: string; name: string; count: number };
 type SeriesPoint = { date: string; label: string; signups: number; tasks: number };
 type PlanSlice = { name: string; value: number };
 
-const PIE_COLORS = ["hsl(var(--primary))", "#f59e0b", "#10b981", "#6366f1", "#94a3b8"];
+const PIE_COLORS = ["var(--primary)", "#f59e0b", "#10b981", "#6366f1", "#94a3b8"];
 
 function DashboardPanel() {
   const [s, setS] = useState<Stats | null>(null);
@@ -239,15 +239,15 @@ function DashboardPanel() {
             <AreaChart data={series} margin={{ left: -20, right: 8, top: 8, bottom: 0 }}>
               <defs>
                 <linearGradient id="gSignup" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.6} />
+                  <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} width={28} />
-              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }} />
-              <Area type="monotone" dataKey="signups" name="Cadastros" stroke="hsl(var(--primary))" fill="url(#gSignup)" strokeWidth={2} />
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="label" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} width={28} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)", opacity: 0.2 }} />
+              <Area type="monotone" dataKey="signups" name="Cadastros" stroke="var(--primary)" fill="url(#gSignup)" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -258,11 +258,11 @@ function DashboardPanel() {
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={series} margin={{ left: -20, right: 8, top: 8, bottom: 0 }}>
-                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} width={28} />
-                <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }} />
-                <Bar dataKey="tasks" name="Tarefas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} width={28} />
+                <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)", opacity: 0.2 }} />
+                <Bar dataKey="tasks" name="Tarefas" fill="var(--primary)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -346,8 +346,8 @@ function DashboardPanel() {
 }
 
 const tooltipStyle = {
-  background: "hsl(var(--surface-elevated))",
-  border: "1px solid hsl(var(--border))",
+  background: "var(--surface-elevated)",
+  border: "1px solid var(--border)",
   borderRadius: 12,
   fontSize: 12,
 };
