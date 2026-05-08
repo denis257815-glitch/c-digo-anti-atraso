@@ -107,7 +107,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
+            className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
           />
           <input
             type="password"
@@ -115,7 +115,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Senha"
-            className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
+            className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
           />
           {mode === "signup" && (
             <input
@@ -124,7 +124,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Confirma a senha"
-              className="w-full rounded-none border-0 border-b border-white/20 bg-transparent px-1 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-primary transition-colors"
+              className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
             />
           )}
 
