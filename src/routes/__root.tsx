@@ -66,6 +66,9 @@ export const Route = createRootRoute({
         content: "Rotina, hábitos, metas e finanças num só lugar. Sem desculpa.",
       },
       { name: "twitter:image", content: "/og-image.jpg" },
+      { name: "description", content: "Organize sua rotina, crie disciplina e controle tarefas diárias com este app." },
+      { property: "og:description", content: "Organize sua rotina, crie disciplina e controle tarefas diárias com este app." },
+      { name: "twitter:description", content: "Organize sua rotina, crie disciplina e controle tarefas diárias com este app." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
