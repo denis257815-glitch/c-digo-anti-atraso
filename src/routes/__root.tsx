@@ -47,6 +47,7 @@ export const Route = createRootRoute({
           "App de disciplina diária: organize rotina, hábitos, metas e finanças num só lugar. Pare de viver no atraso e controle seus dias.",
       },
       { name: "author", content: "Código Anti-Atraso" },
+      { name: "keywords", content: "disciplina, rotina, hábitos, metas, finanças, produtividade, foco, anti-atraso" },
       { property: "og:title", content: "Código Anti-Atraso — Disciplina todo dia" },
       {
         property: "og:description",
@@ -54,19 +55,24 @@ export const Route = createRootRoute({
           "App de disciplina diária: rotina, hábitos, metas e finanças num só lugar. Sem desculpa.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/og-image.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Código Anti-Atraso — Disciplina todo dia" },
       {
         name: "twitter:description",
         content: "Rotina, hábitos, metas e finanças num só lugar. Sem desculpa.",
       },
+      { name: "twitter:image", content: "/og-image.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      {
-        rel: "preconnect",
-        href: "https://fonts.googleapis.com",
-      },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap",

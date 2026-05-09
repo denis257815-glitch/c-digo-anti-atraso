@@ -1,0 +1,12 @@
+{
+  "name": "Código Anti-Atraso",
+  "short_name": "Anti-Atraso",
+  "description": "Disciplina todo dia. Rotina, hábitos, metas e finanças num só lugar.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1f1f23",
+  "theme_color": "#1f1f23",
+  "icons": [
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
