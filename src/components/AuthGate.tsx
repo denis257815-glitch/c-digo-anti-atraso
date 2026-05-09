@@ -63,7 +63,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
         src={loginBg}
         alt=""
         aria-hidden
-        className="pointer-events-none absolute left-[calc(50%-26.24dvh)] top-[calc(50%-35.20dvh)] h-[86.8dvh] w-auto max-w-none object-cover grayscale contrast-110 md:inset-0 md:h-full md:w-full md:object-center"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[center_25%] grayscale contrast-110 md:object-center"
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(0,0,0,0.35)_0%,rgba(0,0,0,0.75)_55%,rgba(0,0,0,0.98)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black" />
