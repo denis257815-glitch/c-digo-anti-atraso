@@ -44,12 +44,22 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Pare de viver no atraso. Organize sua rotina, crie disciplina e controle seus dias.",
+          "App de disciplina diária: organize rotina, hábitos, metas e finanças num só lugar. Pare de viver no atraso e controle seus dias.",
       },
       { name: "author", content: "Código Anti-Atraso" },
-      { property: "og:title", content: "Código Anti-Atraso" },
-      { property: "og:description", content: "Disciplina todo dia. Sem desculpa." },
+      { property: "og:title", content: "Código Anti-Atraso — Disciplina todo dia" },
+      {
+        property: "og:description",
+        content:
+          "App de disciplina diária: rotina, hábitos, metas e finanças num só lugar. Sem desculpa.",
+      },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Código Anti-Atraso — Disciplina todo dia" },
+      {
+        name: "twitter:description",
+        content: "Rotina, hábitos, metas e finanças num só lugar. Sem desculpa.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
