@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Sun, Flame, Wallet, Target } from "lucide-react";
 
@@ -9,7 +10,7 @@ const items = [
   { to: "/metas", label: "Metas", icon: Target },
 ] as const;
 
-export function BottomNav() {
+function BottomNavInner() {
   const { pathname } = useLocation();
   if (pathname.startsWith("/admin")) return null;
   return (
@@ -21,6 +22,7 @@ export function BottomNav() {
             <Link
               key={to}
               to={to}
+              preload="intent"
               className="group relative flex flex-1 flex-col items-center gap-1 px-2 pb-2 pt-3"
             >
               <span
@@ -48,3 +50,5 @@ export function BottomNav() {
     </nav>
   );
 }
+
+export const BottomNav = memo(BottomNavInner);
