@@ -1,13 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { Plus, Trash2, Check, Megaphone, X } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { StreakCard, AchievementsPanel } from "@/components/Engagement";
-import { ProgressChart, WeeklyRecap } from "@/components/Progress";
 import { quoteOfDay } from "@/lib/quotes";
+
+// Lazy: recharts é pesado — só carrega quando o gráfico aparece.
+const ProgressChart = lazy(() =>
+  import("@/components/Progress").then((m) => ({ default: m.ProgressChart })),
+);
+const WeeklyRecap = lazy(() =>
+  import("@/components/Progress").then((m) => ({ default: m.WeeklyRecap })),
+);
+
 
 function BroadcastBanner() {
   const [b, setB] = useState<{ id: string; title: string; body: string } | null>(null);
