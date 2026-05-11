@@ -1,13 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { Plus, Trash2, Check, Megaphone, X } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { StreakCard, AchievementsPanel } from "@/components/Engagement";
-import { ProgressChart, WeeklyRecap } from "@/components/Progress";
 import { quoteOfDay } from "@/lib/quotes";
+
+// Lazy: recharts é pesado — só carrega quando o gráfico aparece.
+const ProgressChart = lazy(() =>
+  import("@/components/Progress").then((m) => ({ default: m.ProgressChart })),
+);
+const WeeklyRecap = lazy(() =>
+  import("@/components/Progress").then((m) => ({ default: m.WeeklyRecap })),
+);
+
 
 function BroadcastBanner() {
   const [b, setB] = useState<{ id: string; title: string; body: string } | null>(null);
@@ -82,17 +90,17 @@ function Dashboard() {
       .then(({ data }) => setTasks(data ?? []));
   }, [user]);
 
-  const toggle = async (id: string, done: boolean) => {
+  const toggle = useCallback(async (id: string, done: boolean) => {
     setTasks((t) => t.map((x) => (x.id === id ? { ...x, done: !done } : x)));
     await supabase.from("tasks").update({ done: !done }).eq("id", id);
-  };
+  }, []);
 
-  const remove = async (id: string) => {
+  const remove = useCallback(async (id: string) => {
     setTasks((t) => t.filter((x) => x.id !== id));
     await supabase.from("tasks").delete().eq("id", id);
-  };
+  }, []);
 
-  const add = async () => {
+  const add = useCallback(async () => {
     if (!input.trim() || !user) return;
     const text = input.trim();
     setInput("");
@@ -102,18 +110,29 @@ function Dashboard() {
       .select("id,text,done")
       .single();
     if (data) setTasks((t) => [...t, data]);
-  };
+  }, [input, user]);
 
-  const done = tasks.filter((t) => t.done).length;
-  const total = tasks.length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
+  const { done, total, pct } = useMemo(() => {
+    const d = tasks.filter((t) => t.done).length;
+    const tot = tasks.length;
+    return { done: d, total: tot, pct: tot ? Math.round((d / tot) * 100) : 0 };
+  }, [tasks]);
+
+  const todayLabel = useMemo(
+    () =>
+      new Date().toLocaleDateString("pt-BR", {
+        weekday: "long",
+        day: "2-digit",
+        month: "short",
+      }),
+    [],
+  );
+
+  const quote = useMemo(() => quoteOfDay(), []);
 
   return (
     <div>
-      <ScreenHeader
-        eyebrow={new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "short" })}
-        title={greeting}
-      />
+      <ScreenHeader eyebrow={todayLabel} title={greeting} />
 
       <BroadcastBanner />
 
@@ -139,10 +158,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="relative h-1.5 overflow-hidden rounded-full bg-background">
-          <div
-            className="h-full bg-primary transition-all duration-700"
-            style={{ width: `${pct}%` }}
-          />
+          <div className="h-full bg-primary transition-all duration-700" style={{ width: `${pct}%` }} />
         </div>
       </div>
 
@@ -161,22 +177,7 @@ function Dashboard() {
       ) : (
         <ul className="space-y-2">
           {tasks.map((t) => (
-            <li key={t.id} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4">
-              <button
-                onClick={() => toggle(t.id, t.done)}
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border-2 transition ${
-                  t.done ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary/60"
-                }`}
-              >
-                {t.done && <Check className="h-4 w-4" />}
-              </button>
-              <span className={`flex-1 text-sm ${t.done ? "text-muted-foreground line-through" : "text-foreground"}`}>
-                {t.text}
-              </span>
-              <button onClick={() => remove(t.id)} className="text-muted-foreground hover:text-primary">
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </li>
+            <TaskRow key={t.id} task={t} onToggle={toggle} onRemove={remove} />
           ))}
         </ul>
       )}
@@ -195,17 +196,53 @@ function Dashboard() {
       </div>
 
       <div className="mt-10 border-l-4 border-primary py-2 pl-4">
-        <p className="font-display text-lg leading-tight tracking-wide">
-          {quoteOfDay()}
-        </p>
+        <p className="font-display text-lg leading-tight tracking-wide">{quote}</p>
         <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
           Código Anti-Atraso
         </p>
       </div>
 
-      <WeeklyRecap />
-      <ProgressChart days={14} />
+      <Suspense fallback={<div className="mt-6 h-32 rounded-2xl border border-border bg-surface" />}>
+        <WeeklyRecap />
+        <ProgressChart days={14} />
+      </Suspense>
       <AchievementsPanel />
     </div>
   );
 }
+
+const TaskRow = memo(function TaskRow({
+  task,
+  onToggle,
+  onRemove,
+}: {
+  task: Task;
+  onToggle: (id: string, done: boolean) => void;
+  onRemove: (id: string) => void;
+}) {
+  return (
+    <li className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4">
+      <button
+        onClick={() => onToggle(task.id, task.done)}
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border-2 transition ${
+          task.done
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-border hover:border-primary/60"
+        }`}
+      >
+        {task.done && <Check className="h-4 w-4" />}
+      </button>
+      <span
+        className={`flex-1 text-sm ${
+          task.done ? "text-muted-foreground line-through" : "text-foreground"
+        }`}
+      >
+        {task.text}
+      </span>
+      <button onClick={() => onRemove(task.id)} className="text-muted-foreground hover:text-primary">
+        <Trash2 className="h-4 w-4" />
+      </button>
+    </li>
+  );
+});
+
