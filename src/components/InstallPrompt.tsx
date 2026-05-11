@@ -7,7 +7,24 @@ type BIPEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 };
 
-const DISMISS_KEY = "install-prompt-dismissed-v1";
+const DISMISS_KEY = "install-prompt-snooze-v2";
+const SNOOZE_MS = 3 * 24 * 60 * 60 * 1000; // 3 dias
+
+function isSnoozed() {
+  try {
+    const raw = localStorage.getItem(DISMISS_KEY);
+    if (!raw) return false;
+    const until = parseInt(raw, 10);
+    if (!Number.isFinite(until)) return false;
+    if (Date.now() > until) {
+      localStorage.removeItem(DISMISS_KEY);
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function isStandalone() {
   if (typeof window === "undefined") return false;
@@ -37,7 +54,7 @@ export function InstallPrompt() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (isStandalone()) return;
-    if (localStorage.getItem(DISMISS_KEY)) return;
+    if (isSnoozed()) return;
 
     const p = detectPlatform();
     setPlatform(p);
@@ -65,7 +82,13 @@ export function InstallPrompt() {
 
   const close = (remember = true) => {
     setOpen(false);
-    if (remember) localStorage.setItem(DISMISS_KEY, "1");
+    if (remember) {
+      try {
+        localStorage.setItem(DISMISS_KEY, String(Date.now() + SNOOZE_MS));
+      } catch {
+        /* ignore */
+      }
+    }
   };
 
   const installAndroid = async () => {
