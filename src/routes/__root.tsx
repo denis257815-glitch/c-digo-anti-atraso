@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { PremiumProvider, usePremium } from "@/lib/premium";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { useIsAdmin } from "@/lib/useIsAdmin";
