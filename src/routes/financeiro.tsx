@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+
+const FinanceDashboard = lazy(() =>
+  import("@/components/FinanceDashboard").then((m) => ({ default: m.FinanceDashboard })),
+);
 import {
   Plus,
   Trash2,
