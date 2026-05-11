@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+
+const FinanceDashboard = lazy(() =>
+  import("@/components/FinanceDashboard").then((m) => ({ default: m.FinanceDashboard })),
+);
 import {
   Plus,
   Trash2,
@@ -320,6 +324,21 @@ function Financeiro() {
           tone={prevOuts === 0 ? "neutral" : outsDelta > 0 ? "bad" : "success"}
         />
       </div>
+
+      {/* Dashboard com gráficos (lazy) */}
+      <Suspense
+        fallback={<div className="mb-6 h-44 rounded-2xl border border-border bg-surface" />}
+      >
+        <FinanceDashboard
+          entries={monthEntries}
+          month={month}
+          categoryBreakdown={byCategory.map(({ key, total }) => ({
+            label: CATEGORIES[key].label,
+            total,
+            color: CATEGORIES[key].color,
+          }))}
+        />
+      </Suspense>
 
       {/* Form de adicionar */}
       <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
