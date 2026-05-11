@@ -12,11 +12,15 @@ type PremiumCtx = {
 const Ctx = createContext<PremiumCtx | null>(null);
 
 export function PremiumProvider({ children }: { children: ReactNode }) {
-  const [isPremium, setIsPremium] = useState(false);
+  // Temporariamente: todas as abas liberadas para todos os usuários.
+  const [isPremium, setIsPremium] = useState(true);
   const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
-    setIsPremium(loadState<boolean>("aa.premium", false));
+    // Mantém o storage em sincronia mas força true por enquanto.
+    saveState("aa.premium", true);
+    setIsPremium(true);
+    void loadState;
   }, []);
 
   const setPremium = (v: boolean) => {
