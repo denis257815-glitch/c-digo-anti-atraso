@@ -155,3 +155,22 @@
     text-transform: uppercase;
   }
 }
+
+@keyframes ios-share-pulse {
+  0%, 20% { transform: scale(1); opacity: 1; }
+  30%, 50% { transform: scale(1.4); opacity: 1; }
+  60%, 100% { transform: scale(1); opacity: 0.6; }
+}
+.animate-ios-share {
+  animation: ios-share-pulse 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes ios-sheet-rise {
+  0%, 25% { transform: translateY(110%); opacity: 0; }
+  45%, 80% { transform: translateY(0); opacity: 1; }
+  95%, 100% { transform: translateY(110%); opacity: 0; }
+}
+.ios-sheet {
+  animation: ios-sheet-rise 3s ease-in-out infinite;
+}

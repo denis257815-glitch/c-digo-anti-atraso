@@ -5,6 +5,7 @@ import { useIsAdmin } from "@/lib/useIsAdmin";
 import { AuthGate } from "@/components/AuthGate";
 import { BottomNav } from "@/components/BottomNav";
 import { Paywall } from "@/components/Paywall";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { Crown, LogOut, Shield } from "lucide-react";
 
 import appCss from "../styles.css?url";
@@ -149,6 +150,7 @@ function AppShell() {
         <BottomNav />
       </div>
       <Paywall />
+      <InstallPrompt />
     </div>
   );
 }
