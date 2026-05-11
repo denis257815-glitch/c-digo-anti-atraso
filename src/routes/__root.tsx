@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { PremiumProvider, usePremium } from "@/lib/premium";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { useIsAdmin } from "@/lib/useIsAdmin";
@@ -183,6 +184,34 @@ function AdminButton() {
 }
 
 function RootComponent() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!("serviceWorker" in navigator)) return;
+
+    const isInIframe = (() => {
+      try {
+        return window.self !== window.top;
+      } catch {
+        return true;
+      }
+    })();
+    const host = window.location.hostname;
+    const isPreviewHost =
+      host.includes("id-preview--") || host.includes("lovableproject.com");
+
+    if (isInIframe || isPreviewHost) {
+      // Never register SW in preview/iframe — clean up any old ones.
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        regs.forEach((r) => r.unregister());
+      });
+      return;
+    }
+
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      /* ignore */
+    });
+  }, []);
+
   return (
     <AuthProvider>
       <PremiumProvider>
@@ -193,3 +222,4 @@ function RootComponent() {
     </AuthProvider>
   );
 }
+

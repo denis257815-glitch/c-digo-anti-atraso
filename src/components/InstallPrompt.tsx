@@ -49,7 +49,7 @@ export function InstallPrompt() {
     };
     window.addEventListener("beforeinstallprompt", onBIP);
 
-    // For iOS (no beforeinstallprompt), open after short delay
+    // iOS has no beforeinstallprompt — show manual instructions after a beat.
     if (p === "ios") {
       const t = window.setTimeout(() => setOpen(true), 1200);
       return () => {
@@ -58,13 +58,7 @@ export function InstallPrompt() {
       };
     }
 
-    // Fallback: if no prompt fires within 3s on Android/desktop, still show manual hint
-    const t = window.setTimeout(() => {
-      if (!isStandalone()) setOpen(true);
-    }, 3000);
-
     return () => {
-      window.clearTimeout(t);
       window.removeEventListener("beforeinstallprompt", onBIP);
     };
   }, []);
