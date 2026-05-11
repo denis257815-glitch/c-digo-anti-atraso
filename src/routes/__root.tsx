@@ -150,6 +150,7 @@ function AppShell() {
         <BottomNav />
       </div>
       <Paywall />
+      <InstallPrompt />
     </div>
   );
 }
