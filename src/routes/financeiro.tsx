@@ -325,6 +325,21 @@ function Financeiro() {
         />
       </div>
 
+      {/* Dashboard com gráficos (lazy) */}
+      <Suspense
+        fallback={<div className="mb-6 h-44 rounded-2xl border border-border bg-surface" />}
+      >
+        <FinanceDashboard
+          entries={monthEntries}
+          month={month}
+          categoryBreakdown={byCategory.map(({ key, total }) => ({
+            label: CATEGORIES[key].label,
+            total,
+            color: CATEGORIES[key].color,
+          }))}
+        />
+      </Suspense>
+
       {/* Form de adicionar */}
       <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
         <div className="mb-3 grid grid-cols-2 gap-2">
