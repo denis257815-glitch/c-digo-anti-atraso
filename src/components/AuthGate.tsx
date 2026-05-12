@@ -9,6 +9,9 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [name, setName] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [city, setCity] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -39,10 +42,20 @@ export function AuthGate({ children }: { children: ReactNode }) {
       setError("As senhas não batem.");
       return;
     }
+    if (mode === "signup") {
+      if (!name.trim()) { setError("Diz seu nome."); return; }
+      const wa = whatsapp.replace(/\D/g, "");
+      if (wa.length < 10 || wa.length > 13) { setError("WhatsApp inválido. Use DDD + número."); return; }
+      if (!city.trim()) { setError("Diz sua cidade."); return; }
+    }
     setBusy(true);
     try {
       if (mode === "signin") await signIn(email.trim(), password);
-      else await signUp(email.trim(), password);
+      else await signUp(email.trim(), password, {
+        name: name.trim(),
+        whatsapp: whatsapp.replace(/\D/g, ""),
+        city: city.trim(),
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao entrar.";
       setError(
@@ -101,6 +114,16 @@ export function AuthGate({ children }: { children: ReactNode }) {
         </p>
 
         <form onSubmit={submit} className="mt-7 space-y-3 [&_input]:font-medium [&_input]:tracking-wide">
+          {mode === "signup" && (
+            <input
+              type="text"
+              autoComplete="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Seu nome"
+              className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
+            />
+          )}
           <input
             type="email"
             autoComplete="email"
@@ -109,6 +132,26 @@ export function AuthGate({ children }: { children: ReactNode }) {
             placeholder="Email"
             className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
           />
+          {mode === "signup" && (
+            <>
+              <input
+                type="tel"
+                autoComplete="tel"
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value)}
+                placeholder="WhatsApp (DDD + número)"
+                className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
+              />
+              <input
+                type="text"
+                autoComplete="address-level2"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Sua cidade"
+                className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
+              />
+            </>
+          )}
           <input
             type="password"
             autoComplete={mode === "signin" ? "current-password" : "new-password"}
