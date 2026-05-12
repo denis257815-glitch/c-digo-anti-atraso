@@ -15,18 +15,12 @@ export function useIsAdmin() {
       return;
     }
     setLoading(true);
-    supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (!cancelled) {
-          setIsAdmin(!!data);
-          setLoading(false);
-        }
-      });
+    // Authoritative server-side check (SECURITY DEFINER RPC).
+    supabase.rpc("is_admin").then(({ data, error }) => {
+      if (cancelled) return;
+      setIsAdmin(!error && data === true);
+      setLoading(false);
+    });
     return () => {
       cancelled = true;
     };

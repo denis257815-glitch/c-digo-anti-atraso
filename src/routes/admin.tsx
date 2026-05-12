@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Shield, ArrowLeft, Trash2, Search, Users, CheckSquare, Flame, Target,
@@ -16,6 +16,17 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Código Anti-Atraso" }] }),
+  // Authoritative backend authorization: blocks the route before render.
+  beforeLoad: async () => {
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      throw redirect({ to: "/" });
+    }
+    const { data, error } = await supabase.rpc("is_admin");
+    if (error || data !== true) {
+      throw redirect({ to: "/" });
+    }
+  },
   component: AdminPage,
 });
 
