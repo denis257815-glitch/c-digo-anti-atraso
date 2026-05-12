@@ -7,7 +7,11 @@ type AuthCtx = {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    extra?: { name?: string; whatsapp?: string; city?: string },
+  ) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
