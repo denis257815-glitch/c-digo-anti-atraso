@@ -140,6 +140,7 @@ function AppShell() {
           <div className="flex items-center gap-2">
             <AdminButton />
             <PremiumBadge />
+            <ProfileButton />
             <SignOutButton />
           </div>
         </div>
@@ -153,6 +154,18 @@ function AppShell() {
       <Paywall />
       <InstallPrompt />
     </div>
+  );
+}
+
+function ProfileButton() {
+  return (
+    <Link
+      to="/perfil"
+      aria-label="Meu perfil"
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
+    >
+      <UserIcon className="h-3.5 w-3.5" />
+    </Link>
   );
 }
 
