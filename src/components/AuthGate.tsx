@@ -114,6 +114,16 @@ export function AuthGate({ children }: { children: ReactNode }) {
         </p>
 
         <form onSubmit={submit} className="mt-7 space-y-3 [&_input]:font-medium [&_input]:tracking-wide">
+          {mode === "signup" && (
+            <input
+              type="text"
+              autoComplete="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Seu nome"
+              className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
+            />
+          )}
           <input
             type="email"
             autoComplete="email"
@@ -122,6 +132,26 @@ export function AuthGate({ children }: { children: ReactNode }) {
             placeholder="Email"
             className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
           />
+          {mode === "signup" && (
+            <>
+              <input
+                type="tel"
+                autoComplete="tel"
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value)}
+                placeholder="WhatsApp (DDD + número)"
+                className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
+              />
+              <input
+                type="text"
+                autoComplete="address-level2"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Sua cidade"
+                className="w-full rounded-none border-0 border-b-2 border-white/40 bg-transparent px-1 py-3 text-base text-white outline-none placeholder:text-white/70 focus:border-primary transition-colors [text-shadow:0_1px_6px_rgba(0,0,0,0.9)]"
+              />
+            </>
+          )}
           <input
             type="password"
             autoComplete={mode === "signin" ? "current-password" : "new-password"}
