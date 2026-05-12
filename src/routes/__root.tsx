@@ -7,7 +7,7 @@ import { AuthGate } from "@/components/AuthGate";
 import { BottomNav } from "@/components/BottomNav";
 import { Paywall } from "@/components/Paywall";
 import { InstallPrompt } from "@/components/InstallPrompt";
-import { Crown, LogOut, Shield } from "lucide-react";
+import { Crown, LogOut, Shield, User as UserIcon } from "lucide-react";
 
 import appCss from "../styles.css?url";
 
