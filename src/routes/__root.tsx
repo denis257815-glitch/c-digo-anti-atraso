@@ -207,9 +207,46 @@ function RootComponent() {
       return;
     }
 
-    navigator.serviceWorker.register("/sw.js").catch(() => {
-      /* ignore */
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
     });
+
+    navigator.serviceWorker
+      .register("/sw.js", { updateViaCache: "none" })
+      .then((reg) => {
+        const promptUpdate = (sw: ServiceWorker | null) => {
+          if (!sw) return;
+          sw.addEventListener("statechange", () => {
+            if (sw.state === "installed" && navigator.serviceWorker.controller) {
+              sw.postMessage("SKIP_WAITING");
+            }
+          });
+        };
+        if (reg.waiting && navigator.serviceWorker.controller) {
+          reg.waiting.postMessage("SKIP_WAITING");
+        }
+        reg.addEventListener("updatefound", () => promptUpdate(reg.installing));
+
+        // Verifica nova versão ao voltar pro app e a cada 60s.
+        const check = () => reg.update().catch(() => {});
+        const onVis = () => {
+          if (document.visibilityState === "visible") check();
+        };
+        document.addEventListener("visibilitychange", onVis);
+        window.addEventListener("focus", check);
+        const interval = window.setInterval(check, 60_000);
+        return () => {
+          document.removeEventListener("visibilitychange", onVis);
+          window.removeEventListener("focus", check);
+          window.clearInterval(interval);
+        };
+      })
+      .catch(() => {
+        /* ignore */
+      });
   }, []);
 
   return (
