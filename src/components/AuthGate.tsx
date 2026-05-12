@@ -42,10 +42,20 @@ export function AuthGate({ children }: { children: ReactNode }) {
       setError("As senhas não batem.");
       return;
     }
+    if (mode === "signup") {
+      if (!name.trim()) { setError("Diz seu nome."); return; }
+      const wa = whatsapp.replace(/\D/g, "");
+      if (wa.length < 10 || wa.length > 13) { setError("WhatsApp inválido. Use DDD + número."); return; }
+      if (!city.trim()) { setError("Diz sua cidade."); return; }
+    }
     setBusy(true);
     try {
       if (mode === "signin") await signIn(email.trim(), password);
-      else await signUp(email.trim(), password);
+      else await signUp(email.trim(), password, {
+        name: name.trim(),
+        whatsapp: whatsapp.replace(/\D/g, ""),
+        city: city.trim(),
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao entrar.";
       setError(
