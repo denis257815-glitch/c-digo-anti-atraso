@@ -118,3 +118,19 @@ create index if not exists finance_user_idx on public.finance_entries(user_id, e
 alter table public.finance_entries enable row level security;
 create policy "finance_all_own" on public.finance_entries
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- 7. Contas a vencer ------------------------------------------------
+create table if not exists public.bills (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  description text not null,
+  value numeric(12,2) not null check (value > 0),
+  due_date date not null,
+  paid boolean not null default false,
+  paid_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists bills_user_idx on public.bills(user_id, due_date);
+alter table public.bills enable row level security;
+create policy "bills_all_own" on public.bills
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
