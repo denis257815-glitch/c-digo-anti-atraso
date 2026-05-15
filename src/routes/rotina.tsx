@@ -256,7 +256,6 @@ function Rotina() {
     if (!editingId) return;
     const id = editingId;
     const text = editText.trim();
-    const time = editTime || null;
     if (!text) {
       toast.error("Digite um texto para o item.");
       return;
@@ -265,6 +264,11 @@ function Rotina() {
       toast.error("O item deve ter no máximo 200 caracteres.");
       return;
     }
+    if (!editTime) {
+      toast.error("Defina um horário.", { description: "Itens da rotina precisam ter um horário." });
+      return;
+    }
+    const time = editTime;
     setEditingId(null);
     setItems((arr) => arr.map((x) => (x.id === id ? { ...x, text, time } : x)));
     const { error } = await supabase.from("aa_routine_items").update({ text, time }).eq("id", id);
