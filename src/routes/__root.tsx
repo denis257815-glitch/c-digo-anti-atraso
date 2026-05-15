@@ -8,6 +8,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Paywall } from "@/components/Paywall";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { Crown, LogOut, Shield, User as UserIcon } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -153,6 +154,7 @@ function AppShell() {
       </div>
       <Paywall />
       <InstallPrompt />
+      <Toaster position="top-center" richColors closeButton />
     </div>
   );
 }
