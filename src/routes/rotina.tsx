@@ -30,7 +30,7 @@ function Rotina() {
   useEffect(() => {
     if (!user) return;
     supabase
-      .from("routine_checks")
+      .from("aa_routine_checks")
       .select("item_key,done")
       .eq("date", date)
       .then(({ data }) => {
@@ -47,9 +47,9 @@ function Rotina() {
     const next = !state[id];
     setState((s) => ({ ...s, [id]: next }));
     if (next) {
-      await supabase.from("routine_checks").upsert({ user_id: user.id, date, item_key: id, done: true });
+      await supabase.from("aa_routine_checks").upsert({ user_id: user.id, date, item_key: id, done: true });
     } else {
-      await supabase.from("routine_checks").delete().eq("user_id", user.id).eq("date", date).eq("item_key", id);
+      await supabase.from("aa_routine_checks").delete().eq("user_id", user.id).eq("date", date).eq("item_key", id);
     }
   };
 

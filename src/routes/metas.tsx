@@ -27,7 +27,7 @@ function Metas() {
   useEffect(() => {
     if (!user) return;
     supabase
-      .from("goals")
+      .from("aa_goals")
       .select("id,text,done")
       .order("created_at", { ascending: true })
       .then(({ data }) => setGoals(data ?? []));
@@ -38,7 +38,7 @@ function Metas() {
     const text = input.trim();
     setInput("");
     const { data } = await supabase
-      .from("goals")
+      .from("aa_goals")
       .insert({ user_id: user.id, text })
       .select("id,text,done")
       .single();
@@ -47,12 +47,12 @@ function Metas() {
 
   const toggle = async (id: string, done: boolean) => {
     setGoals((g) => g.map((x) => (x.id === id ? { ...x, done: !done } : x)));
-    await supabase.from("goals").update({ done: !done }).eq("id", id);
+    await supabase.from("aa_goals").update({ done: !done }).eq("id", id);
   };
 
   const remove = async (id: string) => {
     setGoals((g) => g.filter((x) => x.id !== id));
-    await supabase.from("goals").delete().eq("id", id);
+    await supabase.from("aa_goals").delete().eq("id", id);
   };
 
   const done = goals.filter((g) => g.done).length;
