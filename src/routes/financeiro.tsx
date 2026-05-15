@@ -29,6 +29,9 @@ import {
   Smartphone,
   Zap,
   Tag,
+  CalendarClock,
+  AlertTriangle,
+  Check,
 } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { PremiumGate } from "@/components/PremiumGate";
