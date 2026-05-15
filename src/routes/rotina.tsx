@@ -470,9 +470,12 @@ function Rotina() {
                       className="flex-1 rounded border border-primary/40 bg-background px-2 py-1 text-sm outline-none"
                     />
                     <input
-                      type="time" value={newTime}
+                      type="time" value={newTime} required
                       onChange={(e) => setNewTime(e.target.value)}
-                      className="w-20 rounded border border-border bg-background px-1 py-1 text-xs outline-none"
+                      className={cn(
+                        "w-20 rounded border bg-background px-1 py-1 text-xs outline-none",
+                        newTime ? "border-border" : "border-red-500/60",
+                      )}
                     />
                     <button onClick={() => addItem(b.key)} className="text-primary"><Check className="h-4 w-4" /></button>
                   </li>
