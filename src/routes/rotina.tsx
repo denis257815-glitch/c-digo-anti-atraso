@@ -231,10 +231,14 @@ function Rotina() {
       toast.error("O item deve ter no máximo 200 caracteres.");
       return;
     }
+    if (!newTime) {
+      toast.error("Defina um horário.", { description: "Itens da rotina precisam ter um horário." });
+      return;
+    }
     const position = items.filter((i) => i.block === block).length;
     const { data, error } = await supabase
       .from("aa_routine_items")
-      .insert({ user_id: user.id, block, text, time: newTime || null, position })
+      .insert({ user_id: user.id, block, text, time: newTime, position })
       .select("id,block,text,time,position")
       .single();
     if (error) {
