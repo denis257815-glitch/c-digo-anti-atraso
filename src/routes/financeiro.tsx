@@ -132,6 +132,12 @@ function Financeiro() {
   const [search, setSearch] = useState("");
   const [filterCat, setFilterCat] = useState<CategoryKey | "all">("all");
 
+  // Contas a vencer
+  const [bills, setBills] = useState<Bill[]>([]);
+  const [billDesc, setBillDesc] = useState("");
+  const [billValue, setBillValue] = useState("");
+  const [billDue, setBillDue] = useState("");
+
   useEffect(() => {
     if (!user) return;
     supabase
@@ -140,6 +146,13 @@ function Financeiro() {
       .order("entry_date", { ascending: false })
       .then(({ data }) =>
         setEntries(((data ?? []) as Entry[]).map((e) => ({ ...e, value: Number(e.value) }))),
+      );
+    supabase
+      .from("bills")
+      .select("id,description,value,due_date,paid")
+      .order("due_date", { ascending: true })
+      .then(({ data }) =>
+        setBills(((data ?? []) as Bill[]).map((b) => ({ ...b, value: Number(b.value) }))),
       );
   }, [user]);
 
@@ -160,6 +173,52 @@ function Financeiro() {
   const remove = async (id: string) => {
     setEntries((e) => e.filter((x) => x.id !== id));
     await supabase.from("finance_entries").delete().eq("id", id);
+  };
+
+  const addBill = async () => {
+    const v = parseFloat(billValue.replace(",", "."));
+    if (!billDesc.trim() || isNaN(v) || v <= 0 || !billDue || !user) return;
+    const description = billDesc.trim().slice(0, 120);
+    setBillDesc("");
+    setBillValue("");
+    setBillDue("");
+    const { data } = await supabase
+      .from("bills")
+      .insert({ user_id: user.id, description, value: v, due_date: billDue })
+      .select("id,description,value,due_date,paid")
+      .single();
+    if (data)
+      setBills((b) =>
+        [...b, { ...(data as Bill), value: Number(data.value) }].sort((a, c) =>
+          a.due_date.localeCompare(c.due_date),
+        ),
+      );
+  };
+
+  const removeBill = async (id: string) => {
+    setBills((b) => b.filter((x) => x.id !== id));
+    await supabase.from("bills").delete().eq("id", id);
+  };
+
+  const payBill = async (bill: Bill) => {
+    if (!user || bill.paid) return;
+    setBills((b) => b.map((x) => (x.id === bill.id ? { ...x, paid: true } : x)));
+    await supabase
+      .from("bills")
+      .update({ paid: true, paid_at: new Date().toISOString() })
+      .eq("id", bill.id);
+    // Lança como saída automaticamente
+    const { data } = await supabase
+      .from("finance_entries")
+      .insert({
+        user_id: user.id,
+        type: "out",
+        description: bill.description,
+        value: bill.value,
+      })
+      .select("id,type,description,value,entry_date")
+      .single();
+    if (data) setEntries((e) => [{ ...(data as Entry), value: Number(data.value) }, ...e]);
   };
 
   // ---- Derivações por mês ----
