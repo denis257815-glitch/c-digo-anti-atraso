@@ -119,10 +119,11 @@ function Habitos() {
     }
   };
 
-  const add = async () => {
-    if (!input.trim() || !user) return;
-    const name = input.trim();
-    setInput("");
+  const add = async (nameArg?: string) => {
+    const name = (nameArg ?? input).trim();
+    if (!name || !user) return;
+    if (!nameArg) setInput("");
+    if (habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) return;
     const { data } = await supabase
       .from("habits")
       .insert({ user_id: user.id, name })
