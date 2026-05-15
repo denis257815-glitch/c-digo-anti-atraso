@@ -3,6 +3,7 @@ import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 
 import { Plus, Trash2, Check, Megaphone, X } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { Button } from "@/components/ui/button";
+import { SaveButton } from "@/components/SaveButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { StreakCard, AchievementsPanel } from "@/components/Engagement";
@@ -190,9 +191,9 @@ function Dashboard() {
           placeholder="Nova tarefa..."
           className="flex-1 rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition placeholder:text-muted-foreground focus:border-primary"
         />
-        <Button onClick={add} size="lg" className="bg-primary hover:bg-primary/90">
+        <SaveButton onClick={add} size="lg" className="bg-primary hover:bg-primary/90" aria-label="Adicionar tarefa">
           <Plus className="h-4 w-4" />
-        </Button>
+        </SaveButton>
       </div>
 
       <div className="mt-10 border-l-4 border-primary py-2 pl-4">

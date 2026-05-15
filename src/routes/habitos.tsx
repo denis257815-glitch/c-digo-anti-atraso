@@ -5,6 +5,7 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { PremiumGate } from "@/components/PremiumGate";
 import { todayKey } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
+import { SaveButton } from "@/components/SaveButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -284,9 +285,9 @@ function Habitos() {
           placeholder="Novo hábito..."
           className="flex-1 rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
         />
-        <Button onClick={() => add()} size="lg" className="bg-primary hover:bg-primary/90">
+        <SaveButton onClick={() => add()} size="lg" className="bg-primary hover:bg-primary/90" aria-label="Adicionar hábito">
           <Plus className="h-4 w-4" />
-        </Button>
+        </SaveButton>
       </div>
 
       <div className="mt-6">

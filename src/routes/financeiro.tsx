@@ -36,6 +36,7 @@ import {
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { PremiumGate } from "@/components/PremiumGate";
 import { Button } from "@/components/ui/button";
+import { SaveButton } from "@/components/SaveButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 
@@ -409,9 +410,9 @@ function Financeiro() {
               placeholder="0,00"
               className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
             />
-            <Button onClick={add} size="lg" className="bg-primary hover:bg-primary/90">
+            <SaveButton onClick={add} size="lg" className="bg-primary hover:bg-primary/90" aria-label="Adicionar transação">
               <Plus className="h-4 w-4" />
-            </Button>
+            </SaveButton>
           </div>
           {detectedCat && (
             <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -459,9 +460,9 @@ function Financeiro() {
               onChange={(e) => setBillDue(e.target.value)}
               className="flex-1 rounded-xl border border-border bg-background px-3 py-3 text-sm outline-none focus:border-primary"
             />
-            <Button onClick={addBill} size="lg" className="bg-primary hover:bg-primary/90">
+            <SaveButton onClick={addBill} size="lg" className="bg-primary hover:bg-primary/90" aria-label="Adicionar conta">
               <Plus className="h-4 w-4" />
-            </Button>
+            </SaveButton>
           </div>
         </div>
 

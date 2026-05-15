@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/lib/useIsAdmin";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { SaveButton } from "@/components/SaveButton";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Código Anti-Atraso" }] }),
@@ -757,9 +758,9 @@ function PlanEditor({ plan, onClose, onSaved }: { plan: Plan | null; onClose: ()
 
         <div className="mt-5 flex gap-2">
           <Button variant="ghost" onClick={onClose} className="flex-1">Cancelar</Button>
-          <Button onClick={save} disabled={busy} className="flex-1 bg-primary hover:bg-primary/90">
-            {busy ? "Salvando..." : "Salvar"}
-          </Button>
+          <SaveButton onClick={save} savingLabel="Salvando..." savedLabel="Salvo!" className="flex-1 bg-primary hover:bg-primary/90">
+            Salvar
+          </SaveButton>
         </div>
       </div>
     </div>
