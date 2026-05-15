@@ -420,22 +420,31 @@ function Rotina() {
                         {done && <Check className="h-3.5 w-3.5 animate-scale-in" />}
                       </button>
                       {isEditing ? (
-                        <div className="flex flex-1 items-center gap-2">
+                        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center">
                           <input
                             autoFocus value={editText}
                             onChange={(e) => setEditText(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") setEditingId(null); }}
-                            className="flex-1 rounded border border-primary/40 bg-background px-2 py-1 text-sm outline-none"
+                            onKeyDown={(e) => { if (e.key === "Escape") setEditingId(null); }}
+                            className="min-w-0 flex-1 rounded border border-primary/40 bg-background px-2 py-2 text-sm outline-none"
                           />
-                          <input
-                            type="time" value={editTime} required
-                            onChange={(e) => setEditTime(e.target.value)}
-                            className={cn(
-                              "w-20 rounded border bg-background px-1 py-1 text-xs outline-none",
-                              editTime ? "border-border" : "border-red-500/60",
-                            )}
-                          />
-                          <button onClick={saveEdit} className="text-primary"><Check className="h-4 w-4" /></button>
+                          <div className="flex w-full items-center gap-2 sm:w-auto">
+                            <input
+                              type="time" value={editTime} required
+                              onChange={(e) => setEditTime(e.target.value)}
+                              className={cn(
+                                "min-h-10 flex-1 rounded border bg-background px-2 py-2 text-sm outline-none sm:w-24 sm:flex-none",
+                                editTime ? "border-border" : "border-red-500/60",
+                              )}
+                            />
+                            <button
+                              type="button"
+                              onClick={saveEdit}
+                              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-md bg-primary px-3 text-sm font-bold text-primary-foreground transition active:scale-95"
+                            >
+                              <Check className="h-4 w-4" />
+                              Salvar
+                            </button>
+                          </div>
                         </div>
                       ) : (
                         <>
@@ -461,23 +470,32 @@ function Rotina() {
                   );
                 })}
                 {adding === b.key ? (
-                  <li className="flex items-center gap-2 border-t border-border/50 px-5 py-3">
+                  <li className="flex flex-col gap-2 border-t border-border/50 px-5 py-3 sm:flex-row sm:items-center">
                     <input
                       autoFocus value={newText}
                       onChange={(e) => setNewText(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") addItem(b.key); if (e.key === "Escape") { setAdding(null); setNewText(""); } }}
+                      onKeyDown={(e) => { if (e.key === "Escape") { setAdding(null); setNewText(""); } }}
                       placeholder="Novo item..."
-                      className="flex-1 rounded border border-primary/40 bg-background px-2 py-1 text-sm outline-none"
+                      className="min-w-0 flex-1 rounded border border-primary/40 bg-background px-2 py-2 text-sm outline-none"
                     />
-                    <input
-                      type="time" value={newTime} required
-                      onChange={(e) => setNewTime(e.target.value)}
-                      className={cn(
-                        "w-20 rounded border bg-background px-1 py-1 text-xs outline-none",
-                        newTime ? "border-border" : "border-red-500/60",
-                      )}
-                    />
-                    <button onClick={() => addItem(b.key)} className="text-primary"><Check className="h-4 w-4" /></button>
+                    <div className="flex w-full items-center gap-2 sm:w-auto">
+                      <input
+                        type="time" value={newTime} required
+                        onChange={(e) => setNewTime(e.target.value)}
+                        className={cn(
+                          "min-h-10 flex-1 rounded border bg-background px-2 py-2 text-sm outline-none sm:w-24 sm:flex-none",
+                          newTime ? "border-border" : "border-red-500/60",
+                        )}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => addItem(b.key)}
+                        className="inline-flex min-h-10 shrink-0 items-center justify-center gap-1.5 rounded-md bg-primary px-3 text-sm font-bold text-primary-foreground transition active:scale-95"
+                      >
+                        <Check className="h-4 w-4" />
+                        Salvar
+                      </button>
+                    </div>
                   </li>
                 ) : (
                   <li className="border-t border-border/50">
