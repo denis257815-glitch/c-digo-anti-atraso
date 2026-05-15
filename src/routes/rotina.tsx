@@ -231,10 +231,14 @@ function Rotina() {
       toast.error("O item deve ter no máximo 200 caracteres.");
       return;
     }
+    if (!newTime) {
+      toast.error("Defina um horário.", { description: "Itens da rotina precisam ter um horário." });
+      return;
+    }
     const position = items.filter((i) => i.block === block).length;
     const { data, error } = await supabase
       .from("aa_routine_items")
-      .insert({ user_id: user.id, block, text, time: newTime || null, position })
+      .insert({ user_id: user.id, block, text, time: newTime, position })
       .select("id,block,text,time,position")
       .single();
     if (error) {
@@ -252,7 +256,6 @@ function Rotina() {
     if (!editingId) return;
     const id = editingId;
     const text = editText.trim();
-    const time = editTime || null;
     if (!text) {
       toast.error("Digite um texto para o item.");
       return;
@@ -261,6 +264,11 @@ function Rotina() {
       toast.error("O item deve ter no máximo 200 caracteres.");
       return;
     }
+    if (!editTime) {
+      toast.error("Defina um horário.", { description: "Itens da rotina precisam ter um horário." });
+      return;
+    }
+    const time = editTime;
     setEditingId(null);
     setItems((arr) => arr.map((x) => (x.id === id ? { ...x, text, time } : x)));
     const { error } = await supabase.from("aa_routine_items").update({ text, time }).eq("id", id);
@@ -420,9 +428,12 @@ function Rotina() {
                             className="flex-1 rounded border border-primary/40 bg-background px-2 py-1 text-sm outline-none"
                           />
                           <input
-                            type="time" value={editTime}
+                            type="time" value={editTime} required
                             onChange={(e) => setEditTime(e.target.value)}
-                            className="w-20 rounded border border-border bg-background px-1 py-1 text-xs outline-none"
+                            className={cn(
+                              "w-20 rounded border bg-background px-1 py-1 text-xs outline-none",
+                              editTime ? "border-border" : "border-red-500/60",
+                            )}
                           />
                           <button onClick={saveEdit} className="text-primary"><Check className="h-4 w-4" /></button>
                         </div>
@@ -459,9 +470,12 @@ function Rotina() {
                       className="flex-1 rounded border border-primary/40 bg-background px-2 py-1 text-sm outline-none"
                     />
                     <input
-                      type="time" value={newTime}
+                      type="time" value={newTime} required
                       onChange={(e) => setNewTime(e.target.value)}
-                      className="w-20 rounded border border-border bg-background px-1 py-1 text-xs outline-none"
+                      className={cn(
+                        "w-20 rounded border bg-background px-1 py-1 text-xs outline-none",
+                        newTime ? "border-border" : "border-red-500/60",
+                      )}
                     />
                     <button onClick={() => addItem(b.key)} className="text-primary"><Check className="h-4 w-4" /></button>
                   </li>
