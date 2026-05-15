@@ -86,8 +86,8 @@ function Habitos() {
 
   const reload = async () => {
     if (!user) return;
-    const { data: hs } = await supabase.from("habits").select("id,name").order("created_at");
-    const { data: logs } = await supabase.from("habit_logs").select("habit_id,date");
+    const { data: hs } = await supabase.from("aa_habits").select("id,name").order("created_at");
+    const { data: logs } = await supabase.from("aa_habit_logs").select("habit_id,date");
     const byHabit: Record<string, string[]> = {};
     (logs ?? []).forEach((l) => {
       (byHabit[l.habit_id] ??= []).push(l.date);
@@ -113,9 +113,9 @@ function Habitos() {
       ),
     );
     if (has) {
-      await supabase.from("habit_logs").delete().eq("habit_id", id).eq("date", today);
+      await supabase.from("aa_habit_logs").delete().eq("habit_id", id).eq("date", today);
     } else {
-      await supabase.from("habit_logs").insert({ habit_id: id, user_id: user.id, date: today });
+      await supabase.from("aa_habit_logs").insert({ habit_id: id, user_id: user.id, date: today });
     }
   };
 
@@ -125,7 +125,7 @@ function Habitos() {
     if (!nameArg) setInput("");
     if (habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) return;
     const { data } = await supabase
-      .from("habits")
+      .from("aa_habits")
       .insert({ user_id: user.id, name })
       .select("id,name")
       .single();
@@ -134,7 +134,7 @@ function Habitos() {
 
   const remove = async (id: string) => {
     setHabits((hs) => hs.filter((h) => h.id !== id));
-    await supabase.from("habits").delete().eq("id", id);
+    await supabase.from("aa_habits").delete().eq("id", id);
   };
 
   // Sugestões automáticas baseadas no que o usuário marcou esta semana.

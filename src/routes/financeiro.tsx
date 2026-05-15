@@ -141,14 +141,14 @@ function Financeiro() {
   useEffect(() => {
     if (!user) return;
     supabase
-      .from("finance_entries")
+      .from("aa_finance_entries")
       .select("id,type,description,value,entry_date")
       .order("entry_date", { ascending: false })
       .then(({ data }) =>
         setEntries(((data ?? []) as Entry[]).map((e) => ({ ...e, value: Number(e.value) }))),
       );
     supabase
-      .from("bills")
+      .from("aa_bills")
       .select("id,description,value,due_date,paid")
       .order("due_date", { ascending: true })
       .then(({ data }) =>
@@ -163,7 +163,7 @@ function Financeiro() {
     setDesc("");
     setValue("");
     const { data } = await supabase
-      .from("finance_entries")
+      .from("aa_finance_entries")
       .insert({ user_id: user.id, type, description, value: v })
       .select("id,type,description,value,entry_date")
       .single();
@@ -172,7 +172,7 @@ function Financeiro() {
 
   const remove = async (id: string) => {
     setEntries((e) => e.filter((x) => x.id !== id));
-    await supabase.from("finance_entries").delete().eq("id", id);
+    await supabase.from("aa_finance_entries").delete().eq("id", id);
   };
 
   const addBill = async () => {
@@ -183,7 +183,7 @@ function Financeiro() {
     setBillValue("");
     setBillDue("");
     const { data } = await supabase
-      .from("bills")
+      .from("aa_bills")
       .insert({ user_id: user.id, description, value: v, due_date: billDue })
       .select("id,description,value,due_date,paid")
       .single();
@@ -197,19 +197,19 @@ function Financeiro() {
 
   const removeBill = async (id: string) => {
     setBills((b) => b.filter((x) => x.id !== id));
-    await supabase.from("bills").delete().eq("id", id);
+    await supabase.from("aa_bills").delete().eq("id", id);
   };
 
   const payBill = async (bill: Bill) => {
     if (!user || bill.paid) return;
     setBills((b) => b.map((x) => (x.id === bill.id ? { ...x, paid: true } : x)));
     await supabase
-      .from("bills")
+      .from("aa_bills")
       .update({ paid: true, paid_at: new Date().toISOString() })
       .eq("id", bill.id);
     // Lança como saída automaticamente
     const { data } = await supabase
-      .from("finance_entries")
+      .from("aa_finance_entries")
       .insert({
         user_id: user.id,
         type: "out",

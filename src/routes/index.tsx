@@ -21,7 +21,7 @@ function BroadcastBanner() {
   const [b, setB] = useState<{ id: string; title: string; body: string } | null>(null);
   useEffect(() => {
     supabase
-      .from("broadcasts")
+      .from("aa_broadcasts")
       .select("id,title,body")
       .order("created_at", { ascending: false })
       .limit(1)
@@ -84,7 +84,7 @@ function Dashboard() {
   useEffect(() => {
     if (!user) return;
     supabase
-      .from("tasks")
+      .from("aa_tasks")
       .select("id,text,done")
       .order("created_at", { ascending: true })
       .then(({ data }) => setTasks(data ?? []));
@@ -92,12 +92,12 @@ function Dashboard() {
 
   const toggle = useCallback(async (id: string, done: boolean) => {
     setTasks((t) => t.map((x) => (x.id === id ? { ...x, done: !done } : x)));
-    await supabase.from("tasks").update({ done: !done }).eq("id", id);
+    await supabase.from("aa_tasks").update({ done: !done }).eq("id", id);
   }, []);
 
   const remove = useCallback(async (id: string) => {
     setTasks((t) => t.filter((x) => x.id !== id));
-    await supabase.from("tasks").delete().eq("id", id);
+    await supabase.from("aa_tasks").delete().eq("id", id);
   }, []);
 
   const add = useCallback(async () => {
@@ -105,7 +105,7 @@ function Dashboard() {
     const text = input.trim();
     setInput("");
     const { data } = await supabase
-      .from("tasks")
+      .from("aa_tasks")
       .insert({ user_id: user.id, text })
       .select("id,text,done")
       .single();

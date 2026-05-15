@@ -34,7 +34,7 @@ function ProfilePage() {
     if (!user) return;
     (async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("aa_profiles")
         .select("id,name,avatar_url,whatsapp,city")
         .eq("id", user.id)
         .maybeSingle();
@@ -66,7 +66,7 @@ function ProfilePage() {
       return;
     }
     const { error } = await supabase
-      .from("profiles")
+      .from("aa_profiles")
       .update({ name: name.trim() || null, whatsapp: wa || null, city: city.trim() || null })
       .eq("id", user.id);
     setSaving(false);
@@ -87,17 +87,17 @@ function ProfilePage() {
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const path = `${user.id}/avatar-${Date.now()}.${ext}`;
     const { error: upErr } = await supabase.storage
-      .from("avatars")
+      .from("aa_avatars")
       .upload(path, file, { upsert: true, contentType: file.type });
     if (upErr) {
       setUploading(false);
       setMsg({ type: "err", text: upErr.message });
       return;
     }
-    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+    const { data: pub } = supabase.storage.from("aa_avatars").getPublicUrl(path);
     const url = pub.publicUrl;
     const { error: updErr } = await supabase
-      .from("profiles")
+      .from("aa_profiles")
       .update({ avatar_url: url })
       .eq("id", user.id);
     setUploading(false);

@@ -145,22 +145,22 @@ function DashboardPanel() {
         goalsAll, goalsDone, active7, finance, recentUsers, topTasks,
         signups30, tasks30, plansData, userPlansData,
       ] = await Promise.all([
-        supabase.from("profiles").select("*", head),
-        supabase.from("profiles").select("*", head).gte("created_at", startToday),
-        supabase.from("profiles").select("*", head).gte("created_at", start7d),
-        supabase.from("tasks").select("*", head),
-        supabase.from("tasks").select("*", head).eq("done", true),
-        supabase.from("habits").select("*", head),
-        supabase.from("goals").select("*", head),
-        supabase.from("goals").select("*", head).eq("done", true),
-        supabase.from("habit_logs").select("user_id").gte("date", start7d.slice(0, 10)),
-        supabase.from("finance_entries").select("type,value"),
-        supabase.from("profiles").select("id,name,created_at").order("created_at", { ascending: false }).limit(5),
-        supabase.from("tasks").select("user_id"),
-        supabase.from("profiles").select("created_at").gte("created_at", start30d),
-        supabase.from("tasks").select("created_at").gte("created_at", start30d),
-        supabase.from("plans").select("id,slug,name,price_cents"),
-        supabase.from("user_plans").select("plan_id,status"),
+        supabase.from("aa_profiles").select("*", head),
+        supabase.from("aa_profiles").select("*", head).gte("created_at", startToday),
+        supabase.from("aa_profiles").select("*", head).gte("created_at", start7d),
+        supabase.from("aa_tasks").select("*", head),
+        supabase.from("aa_tasks").select("*", head).eq("done", true),
+        supabase.from("aa_habits").select("*", head),
+        supabase.from("aa_goals").select("*", head),
+        supabase.from("aa_goals").select("*", head).eq("done", true),
+        supabase.from("aa_habit_logs").select("user_id").gte("date", start7d.slice(0, 10)),
+        supabase.from("aa_finance_entries").select("type,value"),
+        supabase.from("aa_profiles").select("id,name,created_at").order("created_at", { ascending: false }).limit(5),
+        supabase.from("aa_tasks").select("user_id"),
+        supabase.from("aa_profiles").select("created_at").gte("created_at", start30d),
+        supabase.from("aa_tasks").select("created_at").gte("created_at", start30d),
+        supabase.from("aa_plans").select("id,slug,name,price_cents"),
+        supabase.from("aa_user_plans").select("plan_id,status"),
       ]);
 
       const activeSet = new Set((active7.data ?? []).map((r: { user_id: string }) => r.user_id));
@@ -174,7 +174,7 @@ function DashboardPanel() {
       }
       const ids = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
       const { data: nameRows } = ids.length
-        ? await supabase.from("profiles").select("id,name").in("id", ids.map(([id]) => id))
+        ? await supabase.from("aa_profiles").select("id,name").in("id", ids.map(([id]) => id))
         : { data: [] as { id: string; name: string | null }[] };
       const nameMap = new Map((nameRows ?? []).map((r) => [r.id, r.name ?? "(sem nome)"]));
 
@@ -416,10 +416,10 @@ function UsersPanel() {
 
   const load = async () => {
     const [{ data: p }, { data: r }, { data: pl }, { data: up }] = await Promise.all([
-      supabase.from("profiles").select("id,name,avatar_url,created_at").order("created_at", { ascending: false }),
-      supabase.from("user_roles").select("user_id,role"),
-      supabase.from("plans").select("*").order("sort_order"),
-      supabase.from("user_plans").select("user_id,plan_id,status,expires_at"),
+      supabase.from("aa_profiles").select("id,name,avatar_url,created_at").order("created_at", { ascending: false }),
+      supabase.from("aa_user_roles").select("user_id,role"),
+      supabase.from("aa_plans").select("*").order("sort_order"),
+      supabase.from("aa_user_plans").select("user_id,plan_id,status,expires_at"),
     ]);
     setProfiles(p ?? []);
     setRoles(r ?? []);
@@ -434,9 +434,9 @@ function UsersPanel() {
   const toggleAdmin = async (id: string) => {
     setBusy(id);
     if (isAdminRole(id)) {
-      await supabase.from("user_roles").delete().eq("user_id", id).eq("role", "admin");
+      await supabase.from("aa_user_roles").delete().eq("user_id", id).eq("role", "admin");
     } else {
-      await supabase.from("user_roles").insert({ user_id: id, role: "admin" });
+      await supabase.from("aa_user_roles").insert({ user_id: id, role: "admin" });
     }
     await load();
     setBusy(null);
@@ -444,7 +444,7 @@ function UsersPanel() {
 
   const setUserPlan = async (userId: string, planId: string) => {
     setBusy(userId);
-    await supabase.from("user_plans").upsert({
+    await supabase.from("aa_user_plans").upsert({
       user_id: userId,
       plan_id: planId || null,
       status: "active",
@@ -458,12 +458,12 @@ function UsersPanel() {
     if (!confirm("Apagar TODOS os dados desse usuário (tarefas, hábitos, metas, financeiro, rotina)? O login continua.")) return;
     setBusy(id);
     await Promise.all([
-      supabase.from("tasks").delete().eq("user_id", id),
-      supabase.from("habits").delete().eq("user_id", id),
-      supabase.from("habit_logs").delete().eq("user_id", id),
-      supabase.from("goals").delete().eq("user_id", id),
-      supabase.from("finance_entries").delete().eq("user_id", id),
-      supabase.from("routine_checks").delete().eq("user_id", id),
+      supabase.from("aa_tasks").delete().eq("user_id", id),
+      supabase.from("aa_habits").delete().eq("user_id", id),
+      supabase.from("aa_habit_logs").delete().eq("user_id", id),
+      supabase.from("aa_goals").delete().eq("user_id", id),
+      supabase.from("aa_finance_entries").delete().eq("user_id", id),
+      supabase.from("aa_routine_checks").delete().eq("user_id", id),
     ]);
     setBusy(null);
     alert("Dados apagados.");
@@ -573,7 +573,7 @@ function PlansPanel() {
   const [err, setErr] = useState<string | null>(null);
 
   const load = async () => {
-    const { data, error } = await supabase.from("plans").select("*").order("sort_order");
+    const { data, error } = await supabase.from("aa_plans").select("*").order("sort_order");
     if (error) { setErr("Rode o SQL PLANS_SETUP.sql no Supabase pra criar a tabela `plans`."); return; }
     setErr(null);
     setPlans((data ?? []) as Plan[]);
@@ -582,12 +582,12 @@ function PlansPanel() {
 
   const remove = async (id: string) => {
     if (!confirm("Apagar esse plano?")) return;
-    await supabase.from("plans").delete().eq("id", id);
+    await supabase.from("aa_plans").delete().eq("id", id);
     load();
   };
 
   const toggleActive = async (p: Plan) => {
-    await supabase.from("plans").update({ active: !p.active }).eq("id", p.id);
+    await supabase.from("aa_plans").update({ active: !p.active }).eq("id", p.id);
     load();
   };
 
@@ -695,8 +695,8 @@ function PlanEditor({ plan, onClose, onSaved }: { plan: Plan | null; onClose: ()
       active,
     };
     const { error } = plan
-      ? await supabase.from("plans").update(payload).eq("id", plan.id)
-      : await supabase.from("plans").insert(payload);
+      ? await supabase.from("aa_plans").update(payload).eq("id", plan.id)
+      : await supabase.from("aa_plans").insert(payload);
     setBusy(false);
     if (error) { setErr(error.message); return; }
     onSaved();
@@ -787,7 +787,7 @@ function BroadcastPanel() {
 
   const load = async () => {
     const { data } = await supabase
-      .from("broadcasts")
+      .from("aa_broadcasts")
       .select("id,title,body,created_at")
       .order("created_at", { ascending: false })
       .limit(20);
@@ -799,7 +799,7 @@ function BroadcastPanel() {
     if (!title.trim() || !body.trim()) return;
     setSending(true);
     setInfo(null);
-    const { error } = await supabase.from("broadcasts").insert({ title: title.trim(), body: body.trim() });
+    const { error } = await supabase.from("aa_broadcasts").insert({ title: title.trim(), body: body.trim() });
     setSending(false);
     if (error) {
       setInfo("Erro: rode o SQL da tabela broadcasts (ver instruções).");
@@ -812,7 +812,7 @@ function BroadcastPanel() {
 
   const remove = async (id: string) => {
     if (!confirm("Apagar essa mensagem?")) return;
-    await supabase.from("broadcasts").delete().eq("id", id);
+    await supabase.from("aa_broadcasts").delete().eq("id", id);
     load();
   };
 

@@ -17,12 +17,12 @@ const ymd = (d: Date) =>
 
 export async function loadUserStats(userId: string): Promise<UserStats> {
   const [tasks, hLogs, rChecks, goals, habits, profile] = await Promise.all([
-    supabase.from("tasks").select("created_at,done").eq("user_id", userId),
-    supabase.from("habit_logs").select("date").eq("user_id", userId),
-    supabase.from("routine_checks").select("date,done").eq("user_id", userId),
-    supabase.from("goals").select("done").eq("user_id", userId),
-    supabase.from("habits").select("id").eq("user_id", userId),
-    supabase.from("profiles").select("created_at").eq("id", userId).maybeSingle(),
+    supabase.from("aa_tasks").select("created_at,done").eq("user_id", userId),
+    supabase.from("aa_habit_logs").select("date").eq("user_id", userId),
+    supabase.from("aa_routine_checks").select("date,done").eq("user_id", userId),
+    supabase.from("aa_goals").select("done").eq("user_id", userId),
+    supabase.from("aa_habits").select("id").eq("user_id", userId),
+    supabase.from("aa_profiles").select("created_at").eq("id", userId).maybeSingle(),
   ]);
 
   const dayKeys = new Set<string>();

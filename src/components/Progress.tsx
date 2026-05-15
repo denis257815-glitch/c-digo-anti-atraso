@@ -24,9 +24,9 @@ export function ProgressChart({ days = 14 }: { days?: number }) {
       const startISO = new Date(start.getFullYear(), start.getMonth(), start.getDate()).toISOString();
 
       const [tasks, hLogs, rChecks] = await Promise.all([
-        supabase.from("tasks").select("created_at,done").eq("user_id", user.id).eq("done", true).gte("created_at", startISO),
-        supabase.from("habit_logs").select("date").eq("user_id", user.id).gte("date", startStr),
-        supabase.from("routine_checks").select("date,done").eq("user_id", user.id).eq("done", true).gte("date", startStr),
+        supabase.from("aa_tasks").select("created_at,done").eq("user_id", user.id).eq("done", true).gte("created_at", startISO),
+        supabase.from("aa_habit_logs").select("date").eq("user_id", user.id).gte("date", startStr),
+        supabase.from("aa_routine_checks").select("date,done").eq("user_id", user.id).eq("done", true).gte("date", startStr),
       ]);
 
       const t = new Map<string, number>();
@@ -130,14 +130,14 @@ export function WeeklyRecap() {
       const prevStartISO = new Date(prevStart.getFullYear(), prevStart.getMonth(), prevStart.getDate()).toISOString();
 
       const [tasks, hLogs, rChecks, finance, goals, prevTasks, prevH, prevR] = await Promise.all([
-        supabase.from("tasks").select("created_at,done").eq("user_id", user.id).eq("done", true).gte("created_at", startISO),
-        supabase.from("habit_logs").select("date").eq("user_id", user.id).gte("date", startStr),
-        supabase.from("routine_checks").select("date,done").eq("user_id", user.id).eq("done", true).gte("date", startStr),
-        supabase.from("finance_entries").select("type,value,entry_date").eq("user_id", user.id).gte("entry_date", startISO),
-        supabase.from("goals").select("done").eq("user_id", user.id).eq("done", true),
-        supabase.from("tasks").select("created_at,done").eq("user_id", user.id).eq("done", true).gte("created_at", prevStartISO).lt("created_at", startISO),
-        supabase.from("habit_logs").select("date").eq("user_id", user.id).gte("date", prevStartStr).lt("date", startStr),
-        supabase.from("routine_checks").select("date,done").eq("user_id", user.id).eq("done", true).gte("date", prevStartStr).lt("date", startStr),
+        supabase.from("aa_tasks").select("created_at,done").eq("user_id", user.id).eq("done", true).gte("created_at", startISO),
+        supabase.from("aa_habit_logs").select("date").eq("user_id", user.id).gte("date", startStr),
+        supabase.from("aa_routine_checks").select("date,done").eq("user_id", user.id).eq("done", true).gte("date", startStr),
+        supabase.from("aa_finance_entries").select("type,value,entry_date").eq("user_id", user.id).gte("entry_date", startISO),
+        supabase.from("aa_goals").select("done").eq("user_id", user.id).eq("done", true),
+        supabase.from("aa_tasks").select("created_at,done").eq("user_id", user.id).eq("done", true).gte("created_at", prevStartISO).lt("created_at", startISO),
+        supabase.from("aa_habit_logs").select("date").eq("user_id", user.id).gte("date", prevStartStr).lt("date", startStr),
+        supabase.from("aa_routine_checks").select("date,done").eq("user_id", user.id).eq("done", true).gte("date", prevStartStr).lt("date", startStr),
       ]);
 
       const tasksN = (tasks.data ?? []).length;
