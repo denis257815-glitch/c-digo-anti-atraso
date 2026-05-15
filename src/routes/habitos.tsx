@@ -35,10 +35,53 @@ function streak(history: string[]): number {
   return count;
 }
 
+const SUGGESTIONS: { group: string; items: string[] }[] = [
+  {
+    group: "Corpo",
+    items: [
+      "Beber 2L de água",
+      "Treinar 30 min",
+      "Caminhar 8 mil passos",
+      "Dormir antes das 23h",
+      "Acordar 6h",
+      "Alongar 10 min",
+    ],
+  },
+  {
+    group: "Mente",
+    items: [
+      "Ler 10 páginas",
+      "Meditar 5 min",
+      "Escrever no diário",
+      "Estudar 30 min",
+      "Sem celular na 1ª hora",
+    ],
+  },
+  {
+    group: "Grana & Trabalho",
+    items: [
+      "Anotar gastos do dia",
+      "1 tarefa importante antes do meio-dia",
+      "Revisar metas da semana",
+      "Prospectar 5 clientes",
+    ],
+  },
+  {
+    group: "Espírito & Família",
+    items: [
+      "Orar / agradecer",
+      "Ligar pra família",
+      "Tempo de qualidade com filhos",
+      "Sem rede social depois das 21h",
+    ],
+  },
+];
+
 function Habitos() {
   const { user } = useAuth();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [input, setInput] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const today = todayKey();
 
   const reload = async () => {
@@ -76,10 +119,11 @@ function Habitos() {
     }
   };
 
-  const add = async () => {
-    if (!input.trim() || !user) return;
-    const name = input.trim();
-    setInput("");
+  const add = async (nameArg?: string) => {
+    const name = (nameArg ?? input).trim();
+    if (!name || !user) return;
+    if (!nameArg) setInput("");
+    if (habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) return;
     const { data } = await supabase
       .from("habits")
       .insert({ user_id: user.id, name })
@@ -140,9 +184,55 @@ function Habitos() {
           placeholder="Novo hábito..."
           className="flex-1 rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
         />
-        <Button onClick={add} size="lg" className="bg-primary hover:bg-primary/90">
+        <Button onClick={() => add()} size="lg" className="bg-primary hover:bg-primary/90">
           <Plus className="h-4 w-4" />
         </Button>
+      </div>
+
+      <div className="mt-6">
+        <button
+          onClick={() => setShowSuggestions((v) => !v)}
+          className="text-xs font-bold uppercase tracking-wider text-primary hover:underline"
+        >
+          {showSuggestions ? "Ocultar sugestões" : "Ver sugestões de hábitos"}
+        </button>
+
+        {showSuggestions && (
+          <div className="mt-4 space-y-5">
+            <p className="text-xs text-muted-foreground">
+              Toque pra adicionar. Começa pequeno — 1 ou 2 já mudam tua semana.
+            </p>
+            {SUGGESTIONS.map((cat) => (
+              <div key={cat.group}>
+                <div className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  {cat.group}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {cat.items.map((item) => {
+                    const already = habits.some(
+                      (h) => h.name.toLowerCase() === item.toLowerCase(),
+                    );
+                    return (
+                      <button
+                        key={item}
+                        onClick={() => add(item)}
+                        disabled={already}
+                        className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                          already
+                            ? "border-border bg-surface text-muted-foreground opacity-50"
+                            : "border-border bg-surface hover:border-primary hover:text-primary"
+                        }`}
+                      >
+                        {already ? "✓ " : "+ "}
+                        {item}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
