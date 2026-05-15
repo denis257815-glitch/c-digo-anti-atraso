@@ -4,6 +4,7 @@ import { ArrowLeft, Camera, Loader2, Save, User as UserIcon } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { SaveButton } from "@/components/SaveButton";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Meu perfil — Código Anti-Atraso" }] }),
@@ -200,13 +201,14 @@ function ProfilePage() {
             </div>
           )}
 
-          <Button
+          <SaveButton
             onClick={save}
-            disabled={saving}
+            savingLabel="Salvando..."
+            savedLabel="Salvo!"
             className="h-11 w-full bg-primary text-sm font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary/90"
           >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="mr-2 h-4 w-4" /> Salvar</>}
-          </Button>
+            <Save className="mr-2 h-4 w-4" /> Salvar
+          </SaveButton>
         </div>
       </div>
     </div>

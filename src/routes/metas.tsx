@@ -4,6 +4,7 @@ import { Plus, Trash2, Check, Target, Pencil, Calendar as CalendarIcon, Flame, C
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { PremiumGate } from "@/components/PremiumGate";
 import { Button } from "@/components/ui/button";
+import { SaveButton } from "@/components/SaveButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -464,9 +465,9 @@ function Metas() {
             onChange={(e) => setDeadline(e.target.value)}
             className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
           />
-          <Button onClick={add} size="lg" className="bg-primary hover:bg-primary/90">
+          <SaveButton onClick={add} size="lg" className="bg-primary hover:bg-primary/90" aria-label="Adicionar meta">
             <Plus className="h-4 w-4" />
-          </Button>
+          </SaveButton>
         </div>
       </div>
 
