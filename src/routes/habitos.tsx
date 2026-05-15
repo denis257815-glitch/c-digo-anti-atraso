@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Plus, Trash2, Flame } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Plus, Trash2, Flame, Sparkles } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { PremiumGate } from "@/components/PremiumGate";
 import { todayKey } from "@/lib/storage";
@@ -137,9 +137,88 @@ function Habitos() {
     await supabase.from("habits").delete().eq("id", id);
   };
 
+  // Sugestões automáticas baseadas no que o usuário marcou esta semana.
+  const smartPicks = useMemo(() => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 6);
+    const weekStart = weekAgo.toISOString().slice(0, 10);
+
+    // Conta marcações por hábito nos últimos 7 dias e identifica grupo.
+    const groupScore: Record<string, number> = {};
+    habits.forEach((h) => {
+      const recent = h.history.filter((d) => d >= weekStart).length;
+      const grp = SUGGESTIONS.find((g) =>
+        g.items.some((it) => it.toLowerCase() === h.name.toLowerCase()),
+      );
+      if (grp) groupScore[grp.group] = (groupScore[grp.group] ?? 0) + recent;
+    });
+
+    const owned = new Set(habits.map((h) => h.name.toLowerCase()));
+    const ranked = [...SUGGESTIONS].sort(
+      (a, b) => (groupScore[b.group] ?? 0) - (groupScore[a.group] ?? 0),
+    );
+
+    const picks: { name: string; group: string }[] = [];
+    // Pega 1 por grupo, priorizando grupos mais marcados.
+    for (const g of ranked) {
+      const cand = g.items.find((it) => !owned.has(it.toLowerCase()));
+      if (cand) picks.push({ name: cand, group: g.group });
+      if (picks.length === 3) break;
+    }
+    // Se ainda faltar, completa com qualquer outro não usado.
+    if (picks.length < 3) {
+      for (const g of SUGGESTIONS) {
+        for (const it of g.items) {
+          if (picks.length === 3) break;
+          if (!owned.has(it.toLowerCase()) && !picks.some((p) => p.name === it)) {
+            picks.push({ name: it, group: g.group });
+          }
+        }
+      }
+    }
+    return picks;
+  }, [habits]);
+
+  const hasWeekActivity = useMemo(() => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 6);
+    const weekStart = weekAgo.toISOString().slice(0, 10);
+    return habits.some((h) => h.history.some((d) => d >= weekStart));
+  }, [habits]);
+
   return (
     <div>
       <ScreenHeader eyebrow="Hábitos" title="Constrói. Repete. Vence." subtitle="Marca o que fez. Não quebra a sequência." />
+
+      {smartPicks.length > 0 && (
+        <div className="mb-5 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-xs font-bold uppercase tracking-wider text-primary">
+              Sugeridos pra você
+            </span>
+          </div>
+          <p className="mb-3 text-xs text-muted-foreground">
+            {hasWeekActivity
+              ? "Baseado no que você marcou esta semana. Toca pra adicionar."
+              : "Comece por um destes. Toca pra adicionar."}
+          </p>
+          <div className="space-y-2">
+            {smartPicks.map((p) => (
+              <button
+                key={p.name}
+                onClick={() => add(p.name)}
+                className="flex w-full items-center justify-between gap-3 rounded-xl border border-border bg-surface px-3 py-2.5 text-left text-sm transition hover:border-primary hover:text-primary"
+              >
+                <span className="truncate">{p.name}</span>
+                <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  + {p.group}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {habits.length === 0 ? (
         <p className="py-10 text-center text-sm text-muted-foreground">
