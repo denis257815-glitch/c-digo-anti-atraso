@@ -459,7 +459,21 @@ function Financeiro() {
         </div>
       </div>
 
-      {/* Top categorias */}
+      {/* Contas a vencer */}
+      <BillsBlock
+        bills={bills}
+        billDesc={billDesc}
+        billValue={billValue}
+        billDue={billDue}
+        setBillDesc={setBillDesc}
+        setBillValue={setBillValue}
+        setBillDue={setBillDue}
+        addBill={addBill}
+        payBill={payBill}
+        removeBill={removeBill}
+      />
+
+
       {byCategory.length > 0 && (
         <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
           <h3 className="mb-3 font-display text-sm uppercase tracking-widest text-muted-foreground">
