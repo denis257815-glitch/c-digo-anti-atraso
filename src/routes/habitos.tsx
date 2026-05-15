@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Sparkles } from "lucide-react";
-import { Plus, Trash2, Flame } from "lucide-react";
+import { Plus, Trash2, Flame, Sparkles } from "lucide-react";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { PremiumGate } from "@/components/PremiumGate";
 import { todayKey } from "@/lib/storage";
