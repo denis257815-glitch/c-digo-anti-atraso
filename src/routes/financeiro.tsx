@@ -57,6 +57,14 @@ type Entry = {
   entry_date: string;
 };
 
+type Bill = {
+  id: string;
+  description: string;
+  value: number;
+  due_date: string;
+  paid: boolean;
+};
+
 type CategoryKey =
   | "alimentacao"
   | "transporte"
