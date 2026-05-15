@@ -184,9 +184,55 @@ function Habitos() {
           placeholder="Novo hábito..."
           className="flex-1 rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
         />
-        <Button onClick={add} size="lg" className="bg-primary hover:bg-primary/90">
+        <Button onClick={() => add()} size="lg" className="bg-primary hover:bg-primary/90">
           <Plus className="h-4 w-4" />
         </Button>
+      </div>
+
+      <div className="mt-6">
+        <button
+          onClick={() => setShowSuggestions((v) => !v)}
+          className="text-xs font-bold uppercase tracking-wider text-primary hover:underline"
+        >
+          {showSuggestions ? "Ocultar sugestões" : "Ver sugestões de hábitos"}
+        </button>
+
+        {showSuggestions && (
+          <div className="mt-4 space-y-5">
+            <p className="text-xs text-muted-foreground">
+              Toque pra adicionar. Começa pequeno — 1 ou 2 já mudam tua semana.
+            </p>
+            {SUGGESTIONS.map((cat) => (
+              <div key={cat.group}>
+                <div className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  {cat.group}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {cat.items.map((item) => {
+                    const already = habits.some(
+                      (h) => h.name.toLowerCase() === item.toLowerCase(),
+                    );
+                    return (
+                      <button
+                        key={item}
+                        onClick={() => add(item)}
+                        disabled={already}
+                        className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                          already
+                            ? "border-border bg-surface text-muted-foreground opacity-50"
+                            : "border-border bg-surface hover:border-primary hover:text-primary"
+                        }`}
+                      >
+                        {already ? "✓ " : "+ "}
+                        {item}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
