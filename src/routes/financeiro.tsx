@@ -590,6 +590,7 @@ function Financeiro() {
       </div>
 
       {/* Top categorias */}
+      {byCategory.length > 0 && (
         <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
           <h3 className="mb-3 font-display text-sm uppercase tracking-widest text-muted-foreground">
             Onde sua grana foi
