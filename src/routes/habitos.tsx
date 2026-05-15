@@ -7,6 +7,7 @@ import { todayKey } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/habitos")({
   head: () => ({
@@ -121,20 +122,40 @@ function Habitos() {
 
   const add = async (nameArg?: string) => {
     const name = (nameArg ?? input).trim();
-    if (!name || !user) return;
+    if (!user) return;
+    if (!name) {
+      toast.error("Digite o nome do hábito.");
+      return;
+    }
+    if (name.length > 100) {
+      toast.error("O nome do hábito deve ter no máximo 100 caracteres.");
+      return;
+    }
+    if (habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) {
+      toast.error("Esse hábito já existe.");
+      return;
+    }
     if (!nameArg) setInput("");
-    if (habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) return;
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("aa_habits")
       .insert({ user_id: user.id, name })
       .select("id,name")
       .single();
-    if (data) setHabits((hs) => [...hs, { id: data.id, name: data.name, history: [] }]);
+    if (error) {
+      toast.error("Não foi possível salvar.", { description: error.message });
+      return;
+    }
+    if (data) {
+      setHabits((hs) => [...hs, { id: data.id, name: data.name, history: [] }]);
+      toast.success("Hábito adicionado.");
+    }
   };
 
   const remove = async (id: string) => {
     setHabits((hs) => hs.filter((h) => h.id !== id));
-    await supabase.from("aa_habits").delete().eq("id", id);
+    const { error } = await supabase.from("aa_habits").delete().eq("id", id);
+    if (error) toast.error("Não foi possível remover.", { description: error.message });
+    else toast.success("Hábito removido.");
   };
 
   // Sugestões automáticas baseadas no que o usuário marcou esta semana.

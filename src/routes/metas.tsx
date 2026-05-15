@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/metas")({
   head: () => ({
@@ -194,8 +195,16 @@ function Metas() {
   }, [goals, filter]);
 
   const add = async () => {
-    if (!input.trim() || !user) return;
+    if (!user) return;
     const text = input.trim();
+    if (!text) {
+      toast.error("Escreva sua meta antes de adicionar.");
+      return;
+    }
+    if (text.length > 200) {
+      toast.error("A meta deve ter no máximo 200 caracteres.");
+      return;
+    }
     const payload = {
       user_id: user.id,
       text,
@@ -205,22 +214,30 @@ function Metas() {
     };
     setInput("");
     setDeadline("");
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("aa_goals")
       .insert(payload)
       .select("id,text,done,category,priority,deadline")
       .single();
+    if (error) {
+      toast.error("Não foi possível salvar a meta.", { description: error.message });
+      return;
+    }
     if (data) setGoals((g) => [...g, data as Goal]);
+    toast.success("Meta adicionada.");
   };
 
   const toggle = async (id: string, isDone: boolean) => {
     setGoals((g) => g.map((x) => (x.id === id ? { ...x, done: !isDone } : x)));
-    await supabase.from("aa_goals").update({ done: !isDone }).eq("id", id);
+    const { error } = await supabase.from("aa_goals").update({ done: !isDone }).eq("id", id);
+    if (error) toast.error("Não foi possível atualizar.", { description: error.message });
   };
 
   const remove = async (id: string) => {
     setGoals((g) => g.filter((x) => x.id !== id));
-    await supabase.from("aa_goals").delete().eq("id", id);
+    const { error } = await supabase.from("aa_goals").delete().eq("id", id);
+    if (error) toast.error("Não foi possível remover.", { description: error.message });
+    else toast.success("Meta removida.");
   };
 
   const startEdit = (g: Goal) => {
@@ -232,10 +249,22 @@ function Metas() {
     if (!editingId) return;
     const newText = editText.trim();
     const id = editingId;
+    if (!newText) {
+      toast.error("A meta não pode ficar vazia.");
+      return;
+    }
+    if (newText.length > 200) {
+      toast.error("A meta deve ter no máximo 200 caracteres.");
+      return;
+    }
     setEditingId(null);
-    if (!newText) return;
     setGoals((g) => g.map((x) => (x.id === id ? { ...x, text: newText } : x)));
-    await supabase.from("aa_goals").update({ text: newText }).eq("id", id);
+    const { error } = await supabase.from("aa_goals").update({ text: newText }).eq("id", id);
+    if (error) {
+      toast.error("Não foi possível salvar a edição.", { description: error.message });
+      return;
+    }
+    toast.success("Meta atualizada.");
   };
 
   return (

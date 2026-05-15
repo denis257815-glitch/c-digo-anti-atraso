@@ -6,6 +6,7 @@ import { todayKey } from "@/lib/storage";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/rotina")({
   head: () => ({
@@ -220,15 +221,29 @@ function Rotina() {
   };
 
   const addItem = async (block: Block) => {
-    if (!user || !newText.trim()) { setAdding(null); setNewText(""); setNewTime(""); return; }
+    if (!user) return;
+    const text = newText.trim();
+    if (!text) {
+      toast.error("Digite um texto para o item.");
+      return;
+    }
+    if (text.length > 200) {
+      toast.error("O item deve ter no máximo 200 caracteres.");
+      return;
+    }
     const position = items.filter((i) => i.block === block).length;
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("aa_routine_items")
-      .insert({ user_id: user.id, block, text: newText.trim(), time: newTime || null, position })
+      .insert({ user_id: user.id, block, text, time: newTime || null, position })
       .select("id,block,text,time,position")
       .single();
+    if (error) {
+      toast.error("Não foi possível salvar.", { description: error.message });
+      return;
+    }
     if (data) setItems((arr) => [...arr, data as Item]);
     setAdding(null); setNewText(""); setNewTime("");
+    toast.success("Item adicionado.");
   };
 
   const startEdit = (it: Item) => { setEditingId(it.id); setEditText(it.text); setEditTime(it.time ?? ""); };
@@ -238,15 +253,29 @@ function Rotina() {
     const id = editingId;
     const text = editText.trim();
     const time = editTime || null;
+    if (!text) {
+      toast.error("Digite um texto para o item.");
+      return;
+    }
+    if (text.length > 200) {
+      toast.error("O item deve ter no máximo 200 caracteres.");
+      return;
+    }
     setEditingId(null);
-    if (!text) return;
     setItems((arr) => arr.map((x) => (x.id === id ? { ...x, text, time } : x)));
-    await supabase.from("aa_routine_items").update({ text, time }).eq("id", id);
+    const { error } = await supabase.from("aa_routine_items").update({ text, time }).eq("id", id);
+    if (error) {
+      toast.error("Não foi possível salvar a edição.", { description: error.message });
+      return;
+    }
+    toast.success("Item atualizado.");
   };
 
   const removeItem = async (id: string) => {
     setItems((arr) => arr.filter((x) => x.id !== id));
-    await supabase.from("aa_routine_items").delete().eq("id", id);
+    const { error } = await supabase.from("aa_routine_items").delete().eq("id", id);
+    if (error) toast.error("Não foi possível remover.", { description: error.message });
+    else toast.success("Item removido.");
   };
 
   const resetDay = async () => {
