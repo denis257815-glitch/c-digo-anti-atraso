@@ -35,10 +35,53 @@ function streak(history: string[]): number {
   return count;
 }
 
+const SUGGESTIONS: { group: string; items: string[] }[] = [
+  {
+    group: "Corpo",
+    items: [
+      "Beber 2L de água",
+      "Treinar 30 min",
+      "Caminhar 8 mil passos",
+      "Dormir antes das 23h",
+      "Acordar 6h",
+      "Alongar 10 min",
+    ],
+  },
+  {
+    group: "Mente",
+    items: [
+      "Ler 10 páginas",
+      "Meditar 5 min",
+      "Escrever no diário",
+      "Estudar 30 min",
+      "Sem celular na 1ª hora",
+    ],
+  },
+  {
+    group: "Grana & Trabalho",
+    items: [
+      "Anotar gastos do dia",
+      "1 tarefa importante antes do meio-dia",
+      "Revisar metas da semana",
+      "Prospectar 5 clientes",
+    ],
+  },
+  {
+    group: "Espírito & Família",
+    items: [
+      "Orar / agradecer",
+      "Ligar pra família",
+      "Tempo de qualidade com filhos",
+      "Sem rede social depois das 21h",
+    ],
+  },
+];
+
 function Habitos() {
   const { user } = useAuth();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [input, setInput] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const today = todayKey();
 
   const reload = async () => {
