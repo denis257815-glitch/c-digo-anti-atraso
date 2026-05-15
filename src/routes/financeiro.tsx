@@ -460,21 +460,136 @@ function Financeiro() {
       </div>
 
       {/* Contas a vencer */}
-      <BillsBlock
-        bills={bills}
-        billDesc={billDesc}
-        billValue={billValue}
-        billDue={billDue}
-        setBillDesc={setBillDesc}
-        setBillValue={setBillValue}
-        setBillDue={setBillDue}
-        addBill={addBill}
-        payBill={payBill}
-        removeBill={removeBill}
-      />
+      <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="flex items-center gap-1.5 font-display text-sm uppercase tracking-widest">
+            <CalendarClock className="h-4 w-4 text-primary" /> Contas a vencer
+          </h3>
+          {(() => {
+            const pending = bills.filter((b) => !b.paid);
+            const total = pending.reduce((s, b) => s + b.value, 0);
+            return pending.length > 0 ? (
+              <span className="font-display text-sm text-primary">{fmt(total)}</span>
+            ) : null;
+          })()}
+        </div>
 
+        <div className="mb-3 space-y-2">
+          <input
+            value={billDesc}
+            onChange={(e) => setBillDesc(e.target.value)}
+            placeholder="Ex: Aluguel, Cartão, Luz..."
+            maxLength={120}
+            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+          />
+          <div className="flex gap-2">
+            <input
+              value={billValue}
+              onChange={(e) => setBillValue(e.target.value)}
+              inputMode="decimal"
+              placeholder="0,00"
+              className="w-24 rounded-xl border border-border bg-background px-3 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+            />
+            <input
+              type="date"
+              value={billDue}
+              onChange={(e) => setBillDue(e.target.value)}
+              className="flex-1 rounded-xl border border-border bg-background px-3 py-3 text-sm outline-none focus:border-primary"
+            />
+            <Button onClick={addBill} size="lg" className="bg-primary hover:bg-primary/90">
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
 
-      {byCategory.length > 0 && (
+        {bills.length === 0 ? (
+          <p className="py-3 text-center text-xs text-muted-foreground">
+            Nenhuma conta cadastrada.
+          </p>
+        ) : (
+          <ul className="space-y-2">
+            {bills.map((b) => {
+              const due = new Date(b.due_date + "T00:00:00");
+              const today0 = new Date();
+              today0.setHours(0, 0, 0, 0);
+              const days = Math.round((due.getTime() - today0.getTime()) / 86400000);
+              const overdue = !b.paid && days < 0;
+              const soon = !b.paid && days >= 0 && days <= 3;
+              const label = b.paid
+                ? "Pago"
+                : overdue
+                ? `Atrasada ${Math.abs(days)}d`
+                : days === 0
+                ? "Vence hoje"
+                : days === 1
+                ? "Vence amanhã"
+                : `Em ${days}d`;
+              return (
+                <li
+                  key={b.id}
+                  className={`flex items-center gap-3 rounded-xl border p-3 ${
+                    b.paid
+                      ? "border-border bg-background opacity-60"
+                      : overdue
+                      ? "border-primary/40 bg-primary/5"
+                      : soon
+                      ? "border-yellow-500/30 bg-yellow-500/5"
+                      : "border-border bg-background"
+                  }`}
+                >
+                  <div
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
+                      overdue ? "bg-primary/15" : "bg-surface"
+                    }`}
+                  >
+                    {overdue ? (
+                      <AlertTriangle className="h-4 w-4 text-primary" />
+                    ) : (
+                      <CalendarClock className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className={`truncate text-sm font-semibold ${b.paid ? "line-through" : ""}`}>
+                      {b.description}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                      <span>{due.toLocaleDateString("pt-BR")}</span>
+                      <span>•</span>
+                      <span
+                        className={
+                          overdue ? "text-primary" : soon ? "text-yellow-400" : ""
+                        }
+                      >
+                        {label}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="font-display text-base">{fmt(b.value)}</div>
+                  {!b.paid && (
+                    <button
+                      onClick={() => payBill(b)}
+                      className="rounded-lg bg-success/15 p-2 text-success hover:bg-success/25"
+                      aria-label="Marcar como paga"
+                      title="Marcar como paga"
+                    >
+                      <Check className="h-4 w-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => removeBill(b.id)}
+                    className="text-muted-foreground hover:text-primary"
+                    aria-label="Excluir"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+      {/* Top categorias */}
         <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
           <h3 className="mb-3 font-display text-sm uppercase tracking-widest text-muted-foreground">
             Onde sua grana foi
