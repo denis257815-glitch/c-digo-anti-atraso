@@ -373,43 +373,6 @@ function Financeiro() {
         )}
       </div>
 
-      {/* KPIs */}
-      <div className="mb-6 grid grid-cols-3 gap-2">
-        <Kpi
-          icon={PiggyBank}
-          label="Poupança"
-          value={`${savingsRate.toFixed(0)}%`}
-          tone={savingsRate >= 20 ? "success" : savingsRate >= 10 ? "warn" : "bad"}
-        />
-        <Kpi
-          icon={Calendar}
-          label="Média/dia"
-          value={fmtCompact(dailyAvg)}
-          tone="neutral"
-        />
-        <Kpi
-          icon={outsDelta > 0 ? TrendingUp : TrendingDown}
-          label="vs mês ant."
-          value={prevOuts === 0 ? "—" : `${outsDelta > 0 ? "+" : ""}${outsDelta.toFixed(0)}%`}
-          tone={prevOuts === 0 ? "neutral" : outsDelta > 0 ? "bad" : "success"}
-        />
-      </div>
-
-      {/* Dashboard com gráficos (lazy) */}
-      <Suspense
-        fallback={<div className="mb-6 h-44 rounded-2xl border border-border bg-surface" />}
-      >
-        <FinanceDashboard
-          entries={monthEntries}
-          month={month}
-          categoryBreakdown={byCategory.map(({ key, total }) => ({
-            label: CATEGORIES[key].label,
-            total,
-            color: CATEGORIES[key].color,
-          }))}
-        />
-      </Suspense>
-
       {/* Form de adicionar */}
       <div className="mb-6 rounded-2xl border border-border bg-surface p-4">
         <div className="mb-3 grid grid-cols-2 gap-2">
@@ -588,6 +551,43 @@ function Financeiro() {
           </ul>
         )}
       </div>
+
+      {/* KPIs */}
+      <div className="mb-6 grid grid-cols-3 gap-2">
+        <Kpi
+          icon={PiggyBank}
+          label="Poupança"
+          value={`${savingsRate.toFixed(0)}%`}
+          tone={savingsRate >= 20 ? "success" : savingsRate >= 10 ? "warn" : "bad"}
+        />
+        <Kpi
+          icon={Calendar}
+          label="Média/dia"
+          value={fmtCompact(dailyAvg)}
+          tone="neutral"
+        />
+        <Kpi
+          icon={outsDelta > 0 ? TrendingUp : TrendingDown}
+          label="vs mês ant."
+          value={prevOuts === 0 ? "—" : `${outsDelta > 0 ? "+" : ""}${outsDelta.toFixed(0)}%`}
+          tone={prevOuts === 0 ? "neutral" : outsDelta > 0 ? "bad" : "success"}
+        />
+      </div>
+
+      {/* Dashboard com gráficos (lazy) */}
+      <Suspense
+        fallback={<div className="mb-6 h-44 rounded-2xl border border-border bg-surface" />}
+      >
+        <FinanceDashboard
+          entries={monthEntries}
+          month={month}
+          categoryBreakdown={byCategory.map(({ key, total }) => ({
+            label: CATEGORIES[key].label,
+            total,
+            color: CATEGORIES[key].color,
+          }))}
+        />
+      </Suspense>
 
       {/* Top categorias */}
       {byCategory.length > 0 && (
