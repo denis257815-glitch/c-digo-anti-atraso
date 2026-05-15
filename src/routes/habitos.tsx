@@ -137,6 +137,55 @@ function Habitos() {
     await supabase.from("habits").delete().eq("id", id);
   };
 
+  // Sugestões automáticas baseadas no que o usuário marcou esta semana.
+  const smartPicks = useMemo(() => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 6);
+    const weekStart = weekAgo.toISOString().slice(0, 10);
+
+    // Conta marcações por hábito nos últimos 7 dias e identifica grupo.
+    const groupScore: Record<string, number> = {};
+    habits.forEach((h) => {
+      const recent = h.history.filter((d) => d >= weekStart).length;
+      const grp = SUGGESTIONS.find((g) =>
+        g.items.some((it) => it.toLowerCase() === h.name.toLowerCase()),
+      );
+      if (grp) groupScore[grp.group] = (groupScore[grp.group] ?? 0) + recent;
+    });
+
+    const owned = new Set(habits.map((h) => h.name.toLowerCase()));
+    const ranked = [...SUGGESTIONS].sort(
+      (a, b) => (groupScore[b.group] ?? 0) - (groupScore[a.group] ?? 0),
+    );
+
+    const picks: { name: string; group: string }[] = [];
+    // Pega 1 por grupo, priorizando grupos mais marcados.
+    for (const g of ranked) {
+      const cand = g.items.find((it) => !owned.has(it.toLowerCase()));
+      if (cand) picks.push({ name: cand, group: g.group });
+      if (picks.length === 3) break;
+    }
+    // Se ainda faltar, completa com qualquer outro não usado.
+    if (picks.length < 3) {
+      for (const g of SUGGESTIONS) {
+        for (const it of g.items) {
+          if (picks.length === 3) break;
+          if (!owned.has(it.toLowerCase()) && !picks.some((p) => p.name === it)) {
+            picks.push({ name: it, group: g.group });
+          }
+        }
+      }
+    }
+    return picks;
+  }, [habits]);
+
+  const hasWeekActivity = useMemo(() => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 6);
+    const weekStart = weekAgo.toISOString().slice(0, 10);
+    return habits.some((h) => h.history.some((d) => d >= weekStart));
+  }, [habits]);
+
   return (
     <div>
       <ScreenHeader eyebrow="Hábitos" title="Constrói. Repete. Vence." subtitle="Marca o que fez. Não quebra a sequência." />
