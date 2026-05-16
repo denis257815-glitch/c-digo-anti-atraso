@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { SaveButton } from "@/components/SaveButton";
+import { InstallAppButton } from "@/components/InstallPrompt";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Meu perfil — Código Anti-Atraso" }] }),
