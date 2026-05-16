@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { SaveButton } from "@/components/SaveButton";
+import { InstallAppButton } from "@/components/InstallPrompt";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Meu perfil — Código Anti-Atraso" }] }),
@@ -210,6 +211,16 @@ function ProfilePage() {
             <Save className="mr-2 h-4 w-4" /> Salvar
           </SaveButton>
         </div>
+      </div>
+
+      <div className="mt-4 rounded-2xl border border-border bg-surface p-5">
+        <div className="mb-2 inline-block border-l-4 border-primary pl-2 text-[10px] font-bold uppercase tracking-[0.28em] text-primary">
+          App
+        </div>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Instala na tela inicial pra abrir rápido, sem barra de navegador.
+        </p>
+        <InstallAppButton />
       </div>
     </div>
   );
